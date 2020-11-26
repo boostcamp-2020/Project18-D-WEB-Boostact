@@ -20,14 +20,12 @@ const createElement = (type, props, ...children) => {
     },
   };
 };
-
-const vRoot = {}; 
-const workLoop = async () => {
+const workLoop = async (deadline) => {
   if (true) {
-    const result = await makeVDOM();
-    reflectDOM(result);
+    await makeVDOM();
+    reflectDOM();
   }
-  requestIdleCallback(workLoop);
+  // TODO: requestIdleCallback(workLoop);
 };
 const makeVRoot = () => {
   vRoot = {
@@ -107,6 +105,11 @@ const makeVDOM = () => {
     }
     resolve();
   });
+};
+const render = (element, root) => {
+  component = typeof element === "function" ? element() : element;
+  container = root;
+  requestIdleCallback(workLoop);
 };
 };
 
