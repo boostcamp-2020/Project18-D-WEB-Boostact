@@ -1,3 +1,8 @@
+/* eslint-disable no-restricted-syntax */
+let vRoot = null;
+let component, container;
+const deletionQueue = [];
+const FIRST_CHILD = 0;
 const createTextElement = (text) => {
   return {
     type: "TEXT_NODE",
@@ -29,12 +34,21 @@ const workLoop = async () => {
   }
   requestIdleCallback(workLoop);
 };
-
-const render = (component, container) => {
-  vRoot.dom = container;
-  requestIdleCallback(workLoop);
+const makeVRoot = () => {
+  vRoot = {
+    type: component.type,
+    dom: null,
+    alternate: vRoot,
+    props: {
+      children: [...component.props.children],
+    },
+    parent: {
+      kks: "kang",
+      dom: container,
+    },
+    effectTag: vRoot ? "UPDATE" : "PLACEMENT",
 };
-
+};
 // ppt 5,6  page
 const makeVDOM = (component, vRoot) => {
   return new Promise( () => {
