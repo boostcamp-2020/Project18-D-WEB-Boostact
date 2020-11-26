@@ -1,12 +1,16 @@
-import BoostAct from "../src/boostact";
-import element from "./component";
-
-/** @jsx BoostAct.createElement */
-const element = (
-    <ul>
-        <li>item 1</li>
-        <li>item 2</li>
-    </ul>
-)
+import Boostact from "../src/boostact/Boostact";
+/** @jsx Boostact.createElement */
 const container = document.getElementById("root");
-BoostAct.render(element, container);
+const updateValue = (e) => {
+  rerender(e.target.value);
+};
+const rerender = (value) => {
+  const element = (
+    <div>
+      <input onInput={updateValue} value={value} />
+      <h2>Hello {value}</h2>
+    </div>
+  );
+  Boostact.render(element, container);
+};
+rerender("world");
