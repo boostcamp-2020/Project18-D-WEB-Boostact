@@ -10,7 +10,6 @@ const createTextElement = (text) => {
     children: [],
   };
 };
-
 const createElement = (type, props, ...children) => {
   return {
     type,
@@ -40,7 +39,7 @@ const makeVRoot = () => {
       dom: container,
     },
     effectTag: vRoot ? "UPDATE" : "PLACEMENT",
-};
+  };
 };
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
@@ -202,5 +201,4 @@ const useState = (initValue) => {
   const setState = (nextValue) => {};
   return [state, setState];
 };
-
-export { render, createElement };
+export default { render, createElement };
