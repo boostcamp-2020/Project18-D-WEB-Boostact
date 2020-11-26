@@ -123,13 +123,38 @@ const VNodeToRNode = (vnode) => {
     });
   return newNode;
 };
+const reflectDOM = () => {
+  let currentNode = vRoot;
+  deletionQueue.forEach((node) => {
+    reflectDOM(node);
+  });
+  while (currentNode) {
+    switch (currentNode.effectTag) {
+      case "PLACEMENT":
+        placeNode(currentNode);
+        break;
+      case "UPDATE":
+        updateNode(currentNode);
+        break;
+      case "DELETION":
+        deleteNode(currentNode);
+        break;
+      default:
+    }
+    if (currentNode.child) {
+      currentNode = currentNode.child;
+      continue;
+    }
+    if (currentNode.sibling) {
+      currentNode = currentNode.sibling;
+      continue;
+    }
+    while (currentNode.parent && !currentNode.parent.sibling) {
+      currentNode = currentNode.parent;
+    }
+    currentNode = currentNode.parent?.sibling;
+  }
 };
-
-const dertermineState = () => {};
-const makeVnode = (element) => {};
-// ppt 7 page
-const reflectDOM = () => {};
-
 const useState = (initValue) => {
   const value = initValue;
   const state = () => {
