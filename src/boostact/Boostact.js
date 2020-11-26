@@ -44,6 +44,24 @@ const makeVRoot = () => {
     effectTag: vRoot ? "UPDATE" : "PLACEMENT",
 };
 };
+const determineState = (curChild, vChild) => {
+  const sameType = curChild && vChild && curChild.type === vChild.type;
+  if (sameType) {
+    vChild.alternate = curChild;
+    vChild.dom = curChild.dom;
+    vChild.effectTag = "UPDATE";
+  }
+  if (!vChild && !sameType) {
+    curChild.effectTag = "DELETION";
+    curChild.child = null;
+    deletionQueue.push(curChild);
+  }
+  if (!sameType) {
+    vChild.alternate = curChild;
+    vChild.dom = null;
+    vChild.effectTag = "PLACEMENT";
+  }
+};
 // ppt 5,6  page
 const makeVDOM = (component, vRoot) => {
   return new Promise( () => {
