@@ -123,6 +123,16 @@ const VNodeToRNode = (vnode) => {
     });
   return newNode;
 };
+const placeNode = (currentNode) => {
+  const RNode = VNodeToRNode(currentNode);
+  const parent = (currentNode && currentNode.parent) || currentNode;
+  currentNode.dom = RNode;
+  if (currentNode.alternate) {
+    parent.dom.replaceChild(RNode, currentNode.alternate.dom);
+  } else {
+    parent.dom.appendChild(RNode);
+  }
+};
 const reflectDOM = () => {
   let currentNode = vRoot;
   deletionQueue.forEach((node) => {
