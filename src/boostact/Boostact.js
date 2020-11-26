@@ -62,11 +62,52 @@ const determineState = (curChild, vChild) => {
     vChild.effectTag = "PLACEMENT";
   }
 };
-// ppt 5,6  page
-const makeVDOM = (component, vRoot) => {
-  return new Promise( () => {
-
-  })
+const createVNode = (vNode, children) => {
+  let index = FIRST_CHILD;
+  let preSibling;
+  let curChild = vNode.alternate && vNode.alternate.child;
+  while ((children && index < children.length) || curChild) {
+    const vChild = { ...children[index] };
+    if (vChild) {
+      vChild.parent = vNode;
+    }
+    if (index === FIRST_CHILD) {
+      vNode.child = vChild;
+      preSibling = vNode.child;
+    } else {
+      preSibling.sibling = vChild;
+      preSibling = preSibling.sibling;
+    }
+    determineState(curChild, vChild);
+    if (curChild) {
+      curChild = curChild.sibling;
+    }
+    index++;
+  }
+};
+const makeVNode = (vNode) => {
+  createVNode(vNode, vNode.props.children);
+  if (vNode.child) {
+    return vNode.child;
+  }
+  if (vNode.sibling) {
+    return vNode.sibling;
+  }
+  while (vNode.parent && !vNode.parent.sibling) {
+    vNode = vNode.parent;
+  }
+  return vNode.parent?.sibling;
+};
+const makeVDOM = () => {
+  return new Promise((resolve, reject) => {
+    makeVRoot();
+    let nextVNode = vRoot;
+    while (nextVNode) {
+      nextVNode = makeVNode(nextVNode);
+    }
+    resolve();
+  });
+};
 };
 
 const dertermineState = () => {};
