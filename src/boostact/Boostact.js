@@ -158,6 +158,10 @@ const updateNode = (currentNode) => {
     }
   }
 };
+const deleteNode = (currentNode) => {
+  currentNode.parent.dom.removeChild(currentNode);
+  deletionQueue.unshift();
+};
 const reflectDOM = () => {
   let currentNode = vRoot;
   deletionQueue.forEach((node) => {
