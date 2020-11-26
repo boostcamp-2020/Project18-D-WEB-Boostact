@@ -111,6 +111,18 @@ const render = (element, root) => {
   container = root;
   requestIdleCallback(workLoop);
 };
+const VNodeToRNode = (vnode) => {
+  const newNode = vnode.type !== "TEXT_NODE" ? document.createElement(vnode.type) : document.createTextNode("");
+  Object.keys(vnode.props)
+    .filter((prop) => prop !== "children")
+    .forEach((attribute) => {
+      if (attribute.startsWith("on")) {
+        const eventType = attribute.toLowerCase().substring(2);
+        newNode.addEventListener(eventType, vnode.props[attribute]);
+      } else newNode[attribute] = vnode.props[attribute];
+    });
+  return newNode;
+};
 };
 
 const dertermineState = () => {};
