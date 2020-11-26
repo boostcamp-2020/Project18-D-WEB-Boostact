@@ -1,16 +1,9 @@
-import BoostAct from '../src/boostact';
-import FunElement from "./funtionalComponent";
-
-/** @jsx BoostAct.createElement */
+import Boostact from "../src/boostact/Boostact";
+/** @jsx Boostact.createElement */
 const element = (
-    <div>    
-      <div style="background: yellow">
-        <h1>Hello World</h1>
-        <h2 style="text-align:right">from BoostAct</h2>
-      </div>
-      <FunElement />
-    </div>
-
-  );
-
-  export default element;
+  <div>
+      <h1>Hello World</h1>
+      <h2 style="text-align:right">from Boostact</h2>
+  </div>
+);
+export default element;

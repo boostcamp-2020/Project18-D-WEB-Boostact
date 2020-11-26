@@ -1,5 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 let vRoot = null;
+let currentRoot = null;
+let nextVNode = null;
 let component, container;
 const deletionQueue = [];
 const FIRST_CHILD = 0;
@@ -19,45 +21,18 @@ const createElement = (type, props, ...children) => {
     },
   };
 };
-const workLoop = async (deadline) => {
-  if (true) {
-    await makeVDOM();
-    reflectDOM();
+const workLoop = (deadline) => {
+  let isIdle = false;
+  while (nextVNode && !isIdle) {
+    nextVNode = makeVNode(nextVNode);
+    isIdle = deadline.timeRemaining() < 1;
   }
-  // TODO: requestIdleCallback(workLoop);
-};
-const makeVRoot = () => {
-  vRoot = {
-    type: component.type,
-    dom: null,
-    alternate: vRoot,
-    props: {
-      children: [...component.props.children],
-    },
-    parent: {
-      kks: "kang",
-      dom: container,
-    },
-    effectTag: vRoot ? "UPDATE" : "PLACEMENT",
-  };
-};
-const determineState = (curChild, vChild) => {
-  const sameType = curChild && vChild && curChild.type === vChild.type;
-  if (sameType) {
-    vChild.alternate = curChild;
-    vChild.dom = curChild.dom;
-    vChild.effectTag = "UPDATE";
+  if (!nextVNode && vRoot) {
+    reflectDOM(vRoot);
+    currentRoot = vRoot;
+    vRoot = null;
   }
-  if (!vChild && !sameType) {
-    curChild.effectTag = "DELETION";
-    curChild.child = null;
-    deletionQueue.push(curChild);
-  }
-  if (!sameType) {
-    vChild.alternate = curChild;
-    vChild.dom = null;
-    vChild.effectTag = "PLACEMENT";
-  }
+  requestIdleCallback(workLoop);
 };
 const createVNode = (vNode, children) => {
   let index = FIRST_CHILD;
@@ -95,19 +70,49 @@ const makeVNode = (vNode) => {
   }
   return vNode.parent?.sibling;
 };
-const makeVDOM = () => {
-  return new Promise((resolve, reject) => {
-    makeVRoot();
-    let nextVNode = vRoot;
-    while (nextVNode) {
-      nextVNode = makeVNode(nextVNode);
-    }
-    resolve();
-  });
+const makeVRoot = () => {
+  vRoot = {
+    type: component.type,
+    dom: null,
+    alternate: currentRoot,
+    props: {
+      children: [...component.props.children],
+    },
+    parent: {
+      esterEgg: "made_by_boostCamp",
+      J001: "kks",
+      J013: "ksh",
+      J107: "sji",
+      J200: "jhy",
+      dom: container,
+    },
+    effectTag: currentRoot? "UPDATE" : "PLACEMENT",
+  };
 };
+const determineState = (curChild, vChild) => {
+  const sameType = curChild && vChild && curChild.type === vChild.type;
+  if (sameType) {
+    vChild.alternate = curChild;
+    vChild.dom = curChild.dom;
+    vChild.effectTag = "UPDATE";
+  }
+  if (!vChild && !sameType) {
+    curChild.effectTag = "DELETION";
+    curChild.child = null;
+    deletionQueue.push(curChild);
+  }
+  if (!sameType) {
+    vChild.alternate = curChild;
+    vChild.dom = null;
+    vChild.effectTag = "PLACEMENT";
+  }
+};
+
 const render = (element, root) => {
   component = typeof element === "function" ? element() : element;
   container = root;
+  makeVRoot();
+  nextVNode = vRoot;
   requestIdleCallback(workLoop);
 };
 const VNodeToRNode = (vnode) => {
@@ -133,8 +138,8 @@ const placeNode = (currentNode) => {
   }
 };
 const updateNode = (currentNode) => {
-  const oldProps = currentNode.props;
-  const newProps = currentNode.alternate.props;
+  const newProps = currentNode.props;
+  const oldProps = currentNode.alternate.props;
   const { dom } = currentNode;
   for (const name in oldProps) {
     if (!(name in newProps) && name !== "children") {
@@ -161,8 +166,8 @@ const deleteNode = (currentNode) => {
   currentNode.parent.dom.removeChild(currentNode);
   deletionQueue.unshift();
 };
-const reflectDOM = () => {
-  let currentNode = vRoot;
+const reflectDOM = (node) => {
+  let currentNode = node;
   deletionQueue.forEach((node) => {
     reflectDOM(node);
   });
@@ -178,6 +183,7 @@ const reflectDOM = () => {
         deleteNode(currentNode);
         break;
       default:
+        break;
     }
     if (currentNode.child) {
       currentNode = currentNode.child;
