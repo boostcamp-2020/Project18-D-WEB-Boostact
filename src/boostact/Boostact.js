@@ -133,6 +133,31 @@ const placeNode = (currentNode) => {
     parent.dom.appendChild(RNode);
   }
 };
+const updateNode = (currentNode) => {
+  const oldProps = currentNode.props;
+  const newProps = currentNode.alternate.props;
+  const { dom } = currentNode;
+  for (const name in oldProps) {
+    if (!(name in newProps) && name !== "children") {
+      if (name.startsWith("on") && typeof newProps[name] === "function") {
+        const eventType = name.toLowerCase().substring(2);
+        dom.removeEventListener(eventType, oldProps[name]);
+      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+        dom.removeAttribute(name);
+      }
+    }
+  }
+  for (const name in newProps) {
+    if (name !== "children") {
+      if (name.startsWith("on") && typeof newProps[name] === "function") {
+        const eventType = name.toLowerCase().substring(2);
+        dom.addEventListener(eventType, newProps[name]);
+      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+        dom[name] = newProps[name];
+      }
+    }
+  }
+};
 const reflectDOM = () => {
   let currentNode = vRoot;
   deletionQueue.forEach((node) => {
