@@ -2,9 +2,12 @@
 let vRoot = null;
 let currentRoot = null;
 let nextVNode = null;
+let element;
 let component, container;
+
 const deletionQueue = [];
 const FIRST_CHILD = 0;
+
 const createTextElement = (text) => {
   return {
     type: "TEXT_NODE",
@@ -12,6 +15,7 @@ const createTextElement = (text) => {
     children: [],
   };
 };
+
 const createElement = (type, props, ...children) => {
   return {
     type,
@@ -21,8 +25,15 @@ const createElement = (type, props, ...children) => {
     },
   };
 };
-const workLoop = (deadline) => {
+
+const workLoop = async (deadline) => {
   let isIdle = false;
+  if (nextVNode === vRoot) {
+    component = typeof element.type === "function" ? element.type() : element;
+    makeVRoot();
+    nextVNode = vRoot;
+  }
+
   while (nextVNode && !isIdle) {
     nextVNode = makeVNode(nextVNode);
     isIdle = deadline.timeRemaining() < 1;
@@ -31,10 +42,12 @@ const workLoop = (deadline) => {
     reflectDOM(vRoot);
     currentRoot = vRoot;
     vRoot = null;
+    HOOK_ID = 0;
   }
   requestIdleCallback(workLoop);
 };
-const createVNode = (vNode, children) => {
+
+const appendVNode = (vNode, children) => {
   let index = FIRST_CHILD;
   let preSibling;
   let curChild = vNode.alternate && vNode.alternate.child;
@@ -57,8 +70,9 @@ const createVNode = (vNode, children) => {
     index++;
   }
 };
+
 const makeVNode = (vNode) => {
-  createVNode(vNode, vNode.props.children);
+  appendVNode(vNode, vNode.props.children);
   if (vNode.child) {
     return vNode.child;
   }
@@ -70,6 +84,7 @@ const makeVNode = (vNode) => {
   }
   return vNode.parent?.sibling;
 };
+
 const makeVRoot = () => {
   vRoot = {
     type: component.type,
@@ -79,16 +94,12 @@ const makeVRoot = () => {
       children: [...component.props.children],
     },
     parent: {
-      esterEgg: "made_by_boostCamp",
-      J001: "kks",
-      J013: "ksh",
-      J107: "sji",
-      J200: "jhy",
       dom: container,
     },
-    effectTag: currentRoot? "UPDATE" : "PLACEMENT",
+    effectTag: currentRoot ? "UPDATE" : "PLACEMENT",
   };
 };
+
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
   if (sameType) {
@@ -108,13 +119,12 @@ const determineState = (curChild, vChild) => {
   }
 };
 
-const render = (element, root) => {
-  component = typeof element === "function" ? element() : element;
+const render = (el, root) => {
+  element = el;
   container = root;
-  makeVRoot();
-  nextVNode = vRoot;
   requestIdleCallback(workLoop);
 };
+
 const VNodeToRNode = (vnode) => {
   const newNode = vnode.type !== "TEXT_NODE" ? document.createElement(vnode.type) : document.createTextNode("");
   Object.keys(vnode.props)
@@ -127,6 +137,7 @@ const VNodeToRNode = (vnode) => {
     });
   return newNode;
 };
+
 const placeNode = (currentNode) => {
   const RNode = VNodeToRNode(currentNode);
   const parent = (currentNode && currentNode.parent) || currentNode;
@@ -137,6 +148,7 @@ const placeNode = (currentNode) => {
     parent.dom.appendChild(RNode);
   }
 };
+
 const updateNode = (currentNode) => {
   const newProps = currentNode.props;
   const oldProps = currentNode.alternate.props;
@@ -162,10 +174,12 @@ const updateNode = (currentNode) => {
     }
   }
 };
+
 const deleteNode = (currentNode) => {
   currentNode.parent.dom.removeChild(currentNode);
   deletionQueue.unshift();
 };
+
 const reflectDOM = (node) => {
   let currentNode = node;
   deletionQueue.forEach((node) => {
@@ -199,12 +213,20 @@ const reflectDOM = (node) => {
     currentNode = currentNode.parent?.sibling;
   }
 };
-const useState = (initValue) => {
-  const value = initValue;
-  const state = () => {
-    return value;
+
+let HOOKS = [];
+var HOOK_ID = 0;
+
+export const useState = (initValue) => {
+  HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initValue;
+  const CURRENT_HOOK_ID = HOOK_ID++;
+
+  const setState = (nextValue) => {
+    HOOKS[CURRENT_HOOK_ID] = nextValue;
+    nextVNode = vRoot;
+    return HOOKS[CURRENT_HOOK_ID];
   };
-  const setState = (nextValue) => {};
-  return [state, setState];
+  return [HOOKS[CURRENT_HOOK_ID], setState];
 };
+
 export default { render, createElement };
