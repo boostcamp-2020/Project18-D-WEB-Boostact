@@ -29,7 +29,7 @@ const createElement = (type, props, ...children) => {
 const workLoop = async (deadline) => {
   let isIdle = false;
   if (nextVNode === vRoot) {
-    component = typeof element.type === "function" ? element.type() : element;
+    component = typeof element.type === "function" ? element.type(element.props) : element;
     makeVRoot();
     nextVNode = vRoot;
   }
@@ -88,9 +88,10 @@ const makeVNode = (vNode) => {
 const makeVRoot = () => {
   vRoot = {
     type: component.type,
-    dom: null,
+    dom: currentRoot?.dom,
     alternate: currentRoot,
     props: {
+      ...component.props,
       children: [...component.props.children],
     },
     parent: {
@@ -154,11 +155,12 @@ const updateNode = (currentNode) => {
   const oldProps = currentNode.alternate.props;
   const { dom } = currentNode;
   for (const name in oldProps) {
-    if (!(name in newProps) && name !== "children") {
+    if (name !== "children") {
       if (name.startsWith("on") && typeof newProps[name] === "function") {
         const eventType = name.toLowerCase().substring(2);
         dom.removeEventListener(eventType, oldProps[name]);
-      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") { 
+        if(currentNode.type === "TEXT_NODE") continue;
         dom.removeAttribute(name);
       }
     }
@@ -217,7 +219,7 @@ const reflectDOM = (node) => {
 let HOOKS = [];
 var HOOK_ID = 0;
 
-export const useState = (initValue) => {
+const useState = (initValue) => {
   HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initValue;
   const CURRENT_HOOK_ID = HOOK_ID++;
 
@@ -229,4 +231,4 @@ export const useState = (initValue) => {
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
 
-export default { render, createElement };
+export default { render, createElement, useState};
