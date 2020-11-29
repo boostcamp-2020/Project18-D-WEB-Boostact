@@ -53,6 +53,7 @@ const appendVNode = (vNode, children) => {
   let curChild = vNode.alternate && vNode.alternate.child;
   while ((children && index < children.length) || curChild) {
     const vChild = { ...children[index] };
+    if(typeof vChild.type === "function") vChild = vChild.type(vChild.props);
     if (vChild) {
       vChild.parent = vNode;
     }

@@ -1,22 +1,31 @@
 import Boostact from "../src/boostact/Boostact";
 
 /** @jsx Boostact.createElement */
-const container = document.getElementById("root")
 
-const updateValue = e => {
-  rerender(e.target.value)
+function Counter(props) {
+  const {state,setState} = props;
+  const clictEvent = () => {
+     console.log(setState(state + 1));
+  }
+  return (
+    <button onClick={clictEvent} style="user-select: none">
+      Count: {state}
+    </button>
+  );
 }
 
-const rerender = value => {
-  const element = (
+function App(){
+  const [count1, setCount1] = Boostact.useState(1);
+  const [count2, setCount2] = Boostact.useState(1);
+  return (
     <div>
-        <div>
-      <input onInput={updateValue} value={value} />
-      <h2>Hello {value}</h2>
-      </div>
-    </div>
+      <h1>Boostact is aswesome</h1>
+    <Counter setState={setCount1} state={count1}/>
+  <div>{count1}</div>
+    <Counter setState={setCount2} state={count2}/>
+  <div>{count2}</div>
+  </div>
   )
-  Boostact.render(element, container)
-}
-
-rerender("world");
+  }
+const container = document.getElementById("root");
+Boostact.render(<App/>, container);
