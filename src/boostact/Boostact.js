@@ -275,6 +275,11 @@ const useState = (initValue) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
 
   const setState = (nextValue) => {
+    if (typeof nextValue === "function") {
+      HOOKS[CURRENT_HOOK_ID] = nextValue(HOOKS[CURRENT_HOOK_ID]);
+      nextVNode = vRoot;
+      return;
+    }
     HOOKS[CURRENT_HOOK_ID] = nextValue;
     nextVNode = vRoot;
     return HOOKS[CURRENT_HOOK_ID];
