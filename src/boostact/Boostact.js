@@ -17,11 +17,24 @@ const createTextElement = (text) => {
 };
 
 const createElement = (type, props, ...children) => {
+  const inputChildren = [];
+  children.forEach((child) => {
+    if (typeof child !== "object") {
+      inputChildren.push(createTextElement(child));
+      return;
+    }
+    if (child.length) {
+      child.forEach((child) => inputChildren.push(child));
+      return;
+    }
+    inputChildren.push(child);
+  });
+
   return {
     type,
     props: {
       ...props,
-      children: children.map((child) => (typeof child !== "object" ? createTextElement(child) : child)),
+      children: inputChildren,
     },
   };
 };
@@ -189,6 +202,7 @@ const updateNode = (currentNode) => {
   const newProps = currentNode.props;
   const oldProps = currentNode.alternate.props;
   const { dom } = currentNode;
+
   for (const name in oldProps) {
     if (name !== "children") {
       if (name.startsWith("on") && typeof newProps[name] === "function") {
