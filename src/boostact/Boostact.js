@@ -1,4 +1,6 @@
 /* eslint-disable no-restricted-syntax */
+/** @jsx createElement */
+
 let vRoot = null;
 let currentRoot = null;
 let nextVNode = null;
@@ -10,6 +12,8 @@ const FIRST_CHILD = 0;
 
 let HOOKS = [];
 let HOOK_ID = 0;
+let USECONTEXT_ITEM_ID = 0;
+
 const createTextElement = (text) => {
   return {
     type: "TEXT_NODE",
@@ -45,6 +49,7 @@ const workLoop = async (deadline) => {
     currentRoot = vRoot;
     vRoot = null;
     HOOK_ID = 0;
+    USECONTEXT_ITEM_ID = 0;
   }
   requestIdleCallback(workLoop);
 };
@@ -55,7 +60,7 @@ const appendVNode = (vNode, children) => {
   let curChild = vNode.alternate && vNode.alternate.child;
   while ((children && index < children.length) || curChild) {
     const vChild = { ...children[index] };
-    if(typeof vChild.type === "function") vChild = vChild.type(vChild.props);
+    if (typeof vChild.type === "function") vChild = vChild.type(vChild.props);
     if (vChild) {
       vChild.parent = vNode;
     }
@@ -89,6 +94,15 @@ const makeVNode = (vNode) => {
 };
 
 const makeVRoot = () => {
+  if (typeof component?.type === "function") {
+    const temp = component;
+    component = component.type(component.props.value);
+    Object.keys(temp.props).forEach((prop) => {
+      component.props[prop] = temp.props[prop];
+    });
+    vRoot = component;
+  }
+
   vRoot = {
     type: component.type,
     dom: currentRoot?.dom,
@@ -129,9 +143,9 @@ const render = (el, root) => {
   requestIdleCallback(workLoop);
 };
 
-const VNodeToRNode = (vnode) => {
-  const newNode = vnode.type !== "TEXT_NODE" ? document.createElement(vnode.type) : document.createTextNode("");
-  Object.keys(vnode.props)
+const VNodeToRNode = (vNode) => {
+  const newNode = vNode.type !== "TEXT_NODE" ? document.createElement(vNode.type) : document.createTextNode("");
+  Object.keys(vNode.props)
     .filter((prop) => prop !== "children")
     .forEach((attribute) => {
       if (attribute.startsWith("on")) {
@@ -196,6 +210,7 @@ const reflectDOM = (node) => {
   deletionQueue.forEach((node) => {
     reflectDOM(node);
   });
+
   while (currentNode) {
     switch (currentNode.effectTag) {
       case "PLACEMENT":
@@ -208,6 +223,7 @@ const reflectDOM = (node) => {
         deleteNode(currentNode);
         break;
       default:
+        console.log("알 수 없는 태그입니다!");
         break;
     }
     if (currentNode.child) {
@@ -224,9 +240,6 @@ const reflectDOM = (node) => {
     currentNode = currentNode.parent?.sibling;
   }
 };
-
-let HOOKS = [];
-var HOOK_ID = 0;
 
 const useState = (initValue) => {
   HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initValue;
@@ -267,3 +280,28 @@ const useEffect = (fn, arr) => {
     HOOKS[CURRENT_HOOK_ID].cleanUp = () => {};
   }
 };
+
+const createContext = (defaultValue) => {
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  const useContext_id = USECONTEXT_ITEM_ID++;
+  const useContextHook = {
+    value: null,
+    Provider: (value) => {
+      HOOKS[CURRENT_HOOK_ID][useContext_id].value = value;
+      return <div></div>;
+    },
+  };
+
+  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || [];
+  HOOKS[CURRENT_HOOK_ID].push(useContextHook);
+
+  HOOKS[CURRENT_HOOK_ID][useContext_id].value = defaultValue;
+
+  return HOOKS[CURRENT_HOOK_ID][useContext_id];
+};
+
+const useContext = (context) => {
+  return context.value;
+};
+
+export default { render, createElement, useState, useEffect, createContext, useContext };
