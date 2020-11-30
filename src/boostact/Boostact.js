@@ -116,7 +116,8 @@ const makeVRoot = () => {
     effectTag: currentRoot ? "UPDATE" : "PLACEMENT",
   };
 };
-function shallowEqual(object1, object2) {
+
+const shallowEqual = (object1, object2) => {
   const keys1 = Object.keys(object1);
   const keys2 = Object.keys(object2);
 
@@ -130,7 +131,7 @@ function shallowEqual(object1, object2) {
     }
   }
   return true;
-}
+};
 
 const isUnchanged = (curChild, vChild) => {
   // props 비교
@@ -144,7 +145,6 @@ const isUnchanged = (curChild, vChild) => {
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
 
-  console.log(curChild, vChild);
   if (vChild?.parent.effectTag === "PLACEMENT") {
     vChild.alternate = curChild;
     vChild.dom = null;
