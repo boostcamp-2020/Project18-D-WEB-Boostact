@@ -26,7 +26,7 @@ const createElement = (type, props, ...children) => {
   };
 };
 
-const workLoop = async (deadline) => {
+const workLoop = (deadline) => {
   let isIdle = false;
   if (nextVNode === vRoot) {
     component = typeof element.type === "function" ? element.type(element.props) : element;
@@ -53,7 +53,9 @@ const appendVNode = (vNode, children) => {
   let curChild = vNode.alternate && vNode.alternate.child;
   while ((children && index < children.length) || curChild) {
     const vChild = { ...children[index] };
-    if(typeof vChild.type === "function") vChild = vChild.type(vChild.props);
+    if (typeof vChild.type === "function") {
+      vChild = vChild.type(vChild.props);
+    }
     if (vChild) {
       vChild.parent = vNode;
     }
@@ -101,20 +103,52 @@ const makeVRoot = () => {
     effectTag: currentRoot ? "UPDATE" : "PLACEMENT",
   };
 };
+function shallowEqual(object1, object2) {
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let key of keys1) {
+    if (object1[key] !== object2[key]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+const isUnchanged = (curChild, vChild) => {
+  // props 비교
+  const filterChildren = (child) => Object.fromEntries(Object.entries(child.props).filter(([key]) => key !== "children"));
+  const curProps = filterChildren(curChild);
+  const vProps = filterChildren(vChild);
+
+  return shallowEqual(curProps, vProps);
+};
 
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
-  if (sameType) {
+
+  console.log(curChild, vChild);
+  if (vChild?.parent.effectTag === "PLACEMENT") {
+    vChild.alternate = curChild;
+    vChild.dom = null;
+    vChild.effectTag = "PLACEMENT";
+  } else if (sameType) {
     vChild.alternate = curChild;
     vChild.dom = curChild.dom;
+    if (isUnchanged(curChild, vChild)) {
+      vChild.effectTag = "NONE";
+      return;
+    }
     vChild.effectTag = "UPDATE";
-  }
-  if (!vChild && !sameType) {
+  } else if (!vChild && !sameType) {
     curChild.effectTag = "DELETION";
     curChild.child = null;
     deletionQueue.push(curChild);
-  }
-  if (!sameType) {
+  } else if (!sameType) {
     vChild.alternate = curChild;
     vChild.dom = null;
     vChild.effectTag = "PLACEMENT";
@@ -160,8 +194,8 @@ const updateNode = (currentNode) => {
       if (name.startsWith("on") && typeof newProps[name] === "function") {
         const eventType = name.toLowerCase().substring(2);
         dom.removeEventListener(eventType, oldProps[name]);
-      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") { 
-        if(currentNode.type === "TEXT_NODE") continue;
+      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+        if (currentNode.type === "TEXT_NODE") continue;
         dom.removeAttribute(name);
       }
     }
@@ -199,6 +233,8 @@ const reflectDOM = (node) => {
       case "DELETION":
         deleteNode(currentNode);
         break;
+      case "NONE":
+        break;
       default:
         break;
     }
@@ -232,4 +268,4 @@ const useState = (initValue) => {
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
 
-export default { render, createElement, useState};
+export default { render, createElement, useState };
