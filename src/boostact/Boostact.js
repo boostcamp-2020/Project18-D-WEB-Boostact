@@ -8,6 +8,8 @@ let component, container;
 const deletionQueue = [];
 const FIRST_CHILD = 0;
 
+let HOOKS = [];
+let HOOK_ID = 0;
 const createTextElement = (text) => {
   return {
     type: "TEXT_NODE",
@@ -134,8 +136,14 @@ const VNodeToRNode = (vnode) => {
     .forEach((attribute) => {
       if (attribute.startsWith("on")) {
         const eventType = attribute.toLowerCase().substring(2);
-        newNode.addEventListener(eventType, vnode.props[attribute]);
-      } else newNode[attribute] = vnode.props[attribute];
+        newNode.addEventListener(eventType, vNode.props[attribute]);
+      } else if (attribute === "style") {
+        Object.keys(vNode.props.style).forEach((prop) => {
+          newNode["style"][prop] = vNode.props[attribute][prop];
+        });
+      } else {
+        newNode[attribute] = vNode.props[attribute];
+      }
     });
   return newNode;
 };
@@ -161,7 +169,7 @@ const updateNode = (currentNode) => {
         const eventType = name.toLowerCase().substring(2);
         dom.removeEventListener(eventType, oldProps[name]);
       } else if (!name.startsWith("on") && typeof newProps[name] !== "function") { 
-        if(currentNode.type === "TEXT_NODE") continue;
+        if (currentNode.type === "TEXT_NODE") continue;
         dom.removeAttribute(name);
       }
     }
@@ -232,4 +240,30 @@ const useState = (initValue) => {
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
 
-export default { render, createElement, useState};
+const useEffect = (fn, arr) => {
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  const useEffectHook = {
+    cleanUp: null,
+    beforeArr: [],
+  };
+
+  if (HOOKS[CURRENT_HOOK_ID]?.beforeArr.length) {
+    const beforeArr = HOOKS[CURRENT_HOOK_ID].beforeArr;
+    beforeArr.some((el, i) => {
+      if (el !== arr[i]) {
+        HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
+        HOOKS[CURRENT_HOOK_ID].cleanUp();
+        HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+      }
+    });
+  } else if (!HOOKS[CURRENT_HOOK_ID]) {
+    HOOKS[CURRENT_HOOK_ID] = useEffectHook;
+    HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+    if (arr.length) {
+      HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
+    }
+  } else if (!HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
+    HOOKS[CURRENT_HOOK_ID].cleanUp();
+    HOOKS[CURRENT_HOOK_ID].cleanUp = () => {};
+  }
+};
