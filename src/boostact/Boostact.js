@@ -243,6 +243,12 @@ const updateNode = (currentNode) => {
         dom.addEventListener(eventType, newProps[name]);
       } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
         dom[name] = newProps[name];
+
+        if (name === "style") {
+          Object.keys(newProps[name]).forEach((prop) => {
+            dom["style"][prop] = newProps[name][prop];
+          });
+        }
       }
     }
   }
