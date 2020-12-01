@@ -25,11 +25,13 @@ const createTextElement = (text) => {
 const createElement = (type, props, ...children) => {
   const inputChildren = [];
   children.forEach((child) => {
+    if (!child) return;
+
     if (typeof child !== "object") {
       inputChildren.push(createTextElement(child));
       return;
     }
-    if (child.length) {
+    if (child && child.length) {
       child.forEach((child) => inputChildren.push(child));
       return;
     }
@@ -95,7 +97,7 @@ const appendVNode = (vNode, children) => {
 };
 
 const makeVNode = (vNode) => {
-  appendVNode(vNode, vNode.props.children);
+  appendVNode(vNode, vNode.props && vNode.props.children);
   if (vNode.child) {
     return vNode.child;
   }
@@ -105,7 +107,7 @@ const makeVNode = (vNode) => {
   while (vNode.parent && !vNode.parent.sibling) {
     vNode = vNode.parent;
   }
-  return vNode.parent?.sibling;
+  return vNode.parent && vNode.parent.sibling;
 };
 
 const makeVRoot = () => {
@@ -120,7 +122,7 @@ const makeVRoot = () => {
 
   vRoot = {
     type: component.type,
-    dom: currentRoot?.dom,
+    dom: currentRoot && currentRoot.dom,
     alternate: currentRoot,
     props: {
       ...component.props,
@@ -161,7 +163,7 @@ const isUnchanged = (curChild, vChild) => {
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
 
-  if (vChild?.parent.effectTag === "PLACEMENT") {
+  if (vChild && vChild.parent.effectTag === "PLACEMENT") {
     vChild.alternate = curChild;
     vChild.dom = null;
     vChild.effectTag = "PLACEMENT";
@@ -293,7 +295,7 @@ const reflectDOM = (node) => {
     while (currentNode.parent && !currentNode.parent.sibling) {
       currentNode = currentNode.parent;
     }
-    currentNode = currentNode.parent?.sibling;
+    currentNode = currentNode.parent && currentNode.parent.sibling;
   }
 };
 
@@ -335,7 +337,7 @@ const useEffect = (fn, arr) => {
     beforeArr: [],
   };
 
-  if (HOOKS[CURRENT_HOOK_ID]?.beforeArr.length) {
+  if (HOOKS[CURRENT_HOOK_ID] && HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
     const beforeArr = HOOKS[CURRENT_HOOK_ID].beforeArr;
     beforeArr.some((el, i) => {
       if (el !== arr[i]) {
