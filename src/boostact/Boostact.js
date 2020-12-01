@@ -1,5 +1,4 @@
 /* eslint-disable no-restricted-syntax */
-/** @jsx createElement */
 
 let vRoot = null;
 let currentRoot = null;
@@ -12,7 +11,6 @@ const FIRST_CHILD = 0;
 
 let HOOKS = [];
 let HOOK_ID = 0;
-let USECONTEXT_ITEM_ID = 0;
 
 const createTextElement = (text) => {
   return {
@@ -62,7 +60,6 @@ const workLoop = (deadline) => {
     currentRoot = vRoot;
     vRoot = null;
     HOOK_ID = 0;
-    USECONTEXT_ITEM_ID = 0;
   }
   requestIdleCallback(workLoop);
 };
@@ -109,22 +106,12 @@ const makeVNode = (vNode) => {
 };
 
 const makeVRoot = () => {
-  if (typeof component?.type === "function") {
-    const temp = component;
-    component = component.type(component.props.value);
-    Object.keys(temp.props).forEach((prop) => {
-      component.props[prop] = temp.props[prop];
-    });
-    vRoot = component;
-  }
-
   vRoot = {
     type: component.type,
     dom: currentRoot?.dom,
     alternate: currentRoot,
     props: {
       ...component.props,
-      children: [...component.props.children],
     },
     parent: {
       dom: container,
@@ -313,9 +300,7 @@ const useReducer = (reducer, initialState) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
   const currentValue = HOOKS[CURRENT_HOOK_ID];
   const dispatch = (action) => {
-    console.log(HOOKS[CURRENT_HOOK_ID]);
     HOOKS[CURRENT_HOOK_ID] = reducer(HOOKS[CURRENT_HOOK_ID], action);
-    console.log(HOOKS[CURRENT_HOOK_ID]);
     if (currentValue !== HOOKS[CURRENT_HOOK_ID]) nextVNode = vRoot;
   };
 
