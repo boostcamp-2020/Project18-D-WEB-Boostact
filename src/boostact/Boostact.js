@@ -282,9 +282,24 @@ const useState = (initValue) => {
     }
     HOOKS[CURRENT_HOOK_ID] = nextValue;
     nextVNode = vRoot;
-    return HOOKS[CURRENT_HOOK_ID];
   };
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
 
-export default { render, createElement, useState };
+const useReducer = (reducer, initialState) => {
+  HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initialState;
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  const currentValue = HOOKS[CURRENT_HOOK_ID];
+  const dispatch = (action) => {
+    console.log(HOOKS[CURRENT_HOOK_ID]);
+    HOOKS[CURRENT_HOOK_ID] = reducer(HOOKS[CURRENT_HOOK_ID], action);
+    console.log(HOOKS[CURRENT_HOOK_ID]);
+    if (currentValue !== HOOKS[CURRENT_HOOK_ID]) nextVNode = vRoot;
+  };
+
+  return [HOOKS[CURRENT_HOOK_ID], dispatch];
+};
+
+export default { render, createElement, useState, useReducer };
+
+// module.exports = { render, createElement, useState, useReducer };
