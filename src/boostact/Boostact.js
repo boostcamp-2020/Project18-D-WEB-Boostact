@@ -73,6 +73,10 @@ const appendVNode = (vNode, children) => {
     if (typeof vChild.type === "function") {
       vChild = vChild.type(vChild.props);
     }
+    if(vChild.type === "CONTEXT"){
+      children.splice(index,1);
+      children = [...children, ...vChild.props.children]
+    }
     if (vChild) {
       vChild.parent = vNode;
     }
@@ -337,25 +341,21 @@ const useEffect = (fn, arr) => {
 
 const createContext = (defaultValue) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
-  const useContext_id = USECONTEXT_ITEM_ID++;
   const useContextHook = {
-    value: null,
-    Provider: (value) => {
-      HOOKS[CURRENT_HOOK_ID][useContext_id].value = value;
-      return <div></div>;
+    value: [defaultValue],
+    Provider: (props) => {
+      HOOKS[CURRENT_HOOK_ID].value.push(props.value);
+      return {type:"CONTEXT", props:{children:props.children},context:HOOKS[CURRENT_HOOK_ID]};
     },
   };
 
-  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || [];
-  HOOKS[CURRENT_HOOK_ID].push(useContextHook);
+  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || useContextHook;
 
-  HOOKS[CURRENT_HOOK_ID][useContext_id].value = defaultValue;
-
-  return HOOKS[CURRENT_HOOK_ID][useContext_id];
+  return HOOKS[CURRENT_HOOK_ID];
 };
 
 const useContext = (context) => {
-  return context.value;
+  return context.value[context.value.length - 1];
 };
 
 export default { render, createElement, useState, useEffect, createContext, useContext, useReducer };
