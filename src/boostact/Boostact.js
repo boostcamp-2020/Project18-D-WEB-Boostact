@@ -1,4 +1,6 @@
 /* eslint-disable no-restricted-syntax */
+/** @jsx createElement */
+
 let vRoot = null;
 let currentRoot = null;
 let nextVNode = null;
@@ -7,6 +9,10 @@ let component, container;
 
 const deletionQueue = [];
 const FIRST_CHILD = 0;
+
+let HOOKS = [];
+let HOOK_ID = 0;
+let USECONTEXT_ITEM_ID = 0;
 
 const createTextElement = (text) => {
   return {
@@ -56,6 +62,7 @@ const workLoop = (deadline) => {
     currentRoot = vRoot;
     vRoot = null;
     HOOK_ID = 0;
+    USECONTEXT_ITEM_ID = 0;
   }
   requestIdleCallback(workLoop);
 };
@@ -102,6 +109,15 @@ const makeVNode = (vNode) => {
 };
 
 const makeVRoot = () => {
+  if (typeof component?.type === "function") {
+    const temp = component;
+    component = component.type(component.props.value);
+    Object.keys(temp.props).forEach((prop) => {
+      component.props[prop] = temp.props[prop];
+    });
+    vRoot = component;
+  }
+
   vRoot = {
     type: component.type,
     dom: currentRoot?.dom,
@@ -174,15 +190,21 @@ const render = (el, root) => {
   requestIdleCallback(workLoop);
 };
 
-const VNodeToRNode = (vnode) => {
-  const newNode = vnode.type !== "TEXT_NODE" ? document.createElement(vnode.type) : document.createTextNode("");
-  Object.keys(vnode.props)
+const VNodeToRNode = (vNode) => {
+  const newNode = vNode.type !== "TEXT_NODE" ? document.createElement(vNode.type) : document.createTextNode("");
+  Object.keys(vNode.props)
     .filter((prop) => prop !== "children")
     .forEach((attribute) => {
       if (attribute.startsWith("on")) {
         const eventType = attribute.toLowerCase().substring(2);
-        newNode.addEventListener(eventType, vnode.props[attribute]);
-      } else newNode[attribute] = vnode.props[attribute];
+        newNode.addEventListener(eventType, vNode.props[attribute]);
+      } else if (attribute === "style") {
+        Object.keys(vNode.props.style).forEach((prop) => {
+          newNode["style"][prop] = vNode.props[attribute][prop];
+        });
+      } else {
+        newNode[attribute] = vNode.props[attribute];
+      }
     });
   return newNode;
 };
@@ -236,6 +258,7 @@ const reflectDOM = (node) => {
   deletionQueue.forEach((node) => {
     reflectDOM(node);
   });
+
   while (currentNode) {
     switch (currentNode.effectTag) {
       case "PLACEMENT":
@@ -250,6 +273,7 @@ const reflectDOM = (node) => {
       case "NONE":
         break;
       default:
+        console.log("알 수 없는 태그입니다!");
         break;
     }
     if (currentNode.child) {
@@ -267,9 +291,6 @@ const reflectDOM = (node) => {
   }
 };
 
-let HOOKS = [];
-var HOOK_ID = 0;
-
 const useState = (initValue) => {
   HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initValue;
   const CURRENT_HOOK_ID = HOOK_ID++;
@@ -286,6 +307,7 @@ const useState = (initValue) => {
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
 
+
 const useReducer = (reducer, initialState) => {
   HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initialState;
   const CURRENT_HOOK_ID = HOOK_ID++;
@@ -300,6 +322,56 @@ const useReducer = (reducer, initialState) => {
   return [HOOKS[CURRENT_HOOK_ID], dispatch];
 };
 
-export default { render, createElement, useState, useReducer };
+const useEffect = (fn, arr) => {
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  const useEffectHook = {
+    cleanUp: null,
+    beforeArr: [],
+  };
 
-// module.exports = { render, createElement, useState, useReducer };
+  if (HOOKS[CURRENT_HOOK_ID]?.beforeArr.length) {
+    const beforeArr = HOOKS[CURRENT_HOOK_ID].beforeArr;
+    beforeArr.some((el, i) => {
+      if (el !== arr[i]) {
+        HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
+        HOOKS[CURRENT_HOOK_ID].cleanUp();
+        HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+      }
+    });
+  } else if (!HOOKS[CURRENT_HOOK_ID]) {
+    HOOKS[CURRENT_HOOK_ID] = useEffectHook;
+    HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+    if (arr.length) {
+      HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
+    }
+  } else if (!HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
+    HOOKS[CURRENT_HOOK_ID].cleanUp();
+    HOOKS[CURRENT_HOOK_ID].cleanUp = () => {};
+  }
+};
+
+const createContext = (defaultValue) => {
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  const useContext_id = USECONTEXT_ITEM_ID++;
+  const useContextHook = {
+    value: null,
+    Provider: (value) => {
+      HOOKS[CURRENT_HOOK_ID][useContext_id].value = value;
+      return <div></div>;
+    },
+  };
+
+  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || [];
+  HOOKS[CURRENT_HOOK_ID].push(useContextHook);
+
+  HOOKS[CURRENT_HOOK_ID][useContext_id].value = defaultValue;
+
+  return HOOKS[CURRENT_HOOK_ID][useContext_id];
+};
+
+const useContext = (context) => {
+  return context.value;
+};
+
+export default { render, createElement, useState, useEffect, createContext, useContext, useReducer };
+      
