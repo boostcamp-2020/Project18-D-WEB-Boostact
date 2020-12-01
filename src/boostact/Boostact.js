@@ -303,9 +303,23 @@ const useState = (initValue) => {
     }
     HOOKS[CURRENT_HOOK_ID] = nextValue;
     nextVNode = vRoot;
-    return HOOKS[CURRENT_HOOK_ID];
   };
   return [HOOKS[CURRENT_HOOK_ID], setState];
+};
+
+
+const useReducer = (reducer, initialState) => {
+  HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initialState;
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  const currentValue = HOOKS[CURRENT_HOOK_ID];
+  const dispatch = (action) => {
+    console.log(HOOKS[CURRENT_HOOK_ID]);
+    HOOKS[CURRENT_HOOK_ID] = reducer(HOOKS[CURRENT_HOOK_ID], action);
+    console.log(HOOKS[CURRENT_HOOK_ID]);
+    if (currentValue !== HOOKS[CURRENT_HOOK_ID]) nextVNode = vRoot;
+  };
+
+  return [HOOKS[CURRENT_HOOK_ID], dispatch];
 };
 
 const useEffect = (fn, arr) => {
@@ -359,4 +373,5 @@ const useContext = (context) => {
   return context.value;
 };
 
-export default { render, createElement, useState, useEffect, createContext, useContext };
+export default { render, createElement, useState, useEffect, createContext, useContext, useReducer };
+      
