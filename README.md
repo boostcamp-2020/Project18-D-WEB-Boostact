@@ -32,3 +32,6 @@ https://github.com/boostcamp-2020/Project18-D-WEB-VanillaMarket
 > 무오류는 금이다.
 - mbti : INTP
 - 도전사항 : 자바스크립트 이해하기.
+
+# 기술 스택
+![JS](https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Unofficial_JavaScript_logo_2.svg/1024px-Unofficial_JavaScript_logo_2.svg.png)
