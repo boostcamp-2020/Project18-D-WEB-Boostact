@@ -23,16 +23,29 @@ const createTextElement = (text) => {
 };
 
 const createElement = (type, props, ...children) => {
+  const inputChildren = [];
+  children.forEach((child) => {
+    if (typeof child !== "object") {
+      inputChildren.push(createTextElement(child));
+      return;
+    }
+    if (child.length) {
+      child.forEach((child) => inputChildren.push(child));
+      return;
+    }
+    inputChildren.push(child);
+  });
+
   return {
     type,
     props: {
       ...props,
-      children: children.map((child) => (typeof child !== "object" ? createTextElement(child) : child)),
+      children: inputChildren,
     },
   };
 };
 
-const workLoop = async (deadline) => {
+const workLoop = (deadline) => {
   let isIdle = false;
   if (nextVNode === vRoot) {
     component = typeof element.type === "function" ? element.type(element.props) : element;
@@ -60,7 +73,9 @@ const appendVNode = (vNode, children) => {
   let curChild = vNode.alternate && vNode.alternate.child;
   while ((children && index < children.length) || curChild) {
     const vChild = { ...children[index] };
-    if (typeof vChild.type === "function") vChild = vChild.type(vChild.props);
+    if (typeof vChild.type === "function") {
+      vChild = vChild.type(vChild.props);
+    }
     if (vChild) {
       vChild.parent = vNode;
     }
@@ -118,19 +133,51 @@ const makeVRoot = () => {
   };
 };
 
+const shallowEqual = (object1, object2) => {
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let key of keys1) {
+    if (object1[key] !== object2[key]) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const isUnchanged = (curChild, vChild) => {
+  // props 비교
+  const filterChildren = (child) => Object.fromEntries(Object.entries(child.props).filter(([key]) => key !== "children"));
+  const curProps = filterChildren(curChild);
+  const vProps = filterChildren(vChild);
+
+  return shallowEqual(curProps, vProps);
+};
+
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
-  if (sameType) {
+
+  if (vChild?.parent.effectTag === "PLACEMENT") {
+    vChild.alternate = curChild;
+    vChild.dom = null;
+    vChild.effectTag = "PLACEMENT";
+  } else if (sameType) {
     vChild.alternate = curChild;
     vChild.dom = curChild.dom;
+    if (isUnchanged(curChild, vChild)) {
+      vChild.effectTag = "NONE";
+      return;
+    }
     vChild.effectTag = "UPDATE";
-  }
-  if (!vChild && !sameType) {
+  } else if (!vChild && !sameType) {
     curChild.effectTag = "DELETION";
     curChild.child = null;
     deletionQueue.push(curChild);
-  }
-  if (!sameType) {
+  } else if (!sameType) {
     vChild.alternate = curChild;
     vChild.dom = null;
     vChild.effectTag = "PLACEMENT";
@@ -177,12 +224,13 @@ const updateNode = (currentNode) => {
   const newProps = currentNode.props;
   const oldProps = currentNode.alternate.props;
   const { dom } = currentNode;
+
   for (const name in oldProps) {
     if (name !== "children") {
       if (name.startsWith("on") && typeof newProps[name] === "function") {
         const eventType = name.toLowerCase().substring(2);
         dom.removeEventListener(eventType, oldProps[name]);
-      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") { 
+      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
         if (currentNode.type === "TEXT_NODE") continue;
         dom.removeAttribute(name);
       }
@@ -222,6 +270,8 @@ const reflectDOM = (node) => {
       case "DELETION":
         deleteNode(currentNode);
         break;
+      case "NONE":
+        break;
       default:
         console.log("알 수 없는 태그입니다!");
         break;
@@ -246,6 +296,11 @@ const useState = (initValue) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
 
   const setState = (nextValue) => {
+    if (typeof nextValue === "function") {
+      HOOKS[CURRENT_HOOK_ID] = nextValue(HOOKS[CURRENT_HOOK_ID]);
+      nextVNode = vRoot;
+      return;
+    }
     HOOKS[CURRENT_HOOK_ID] = nextValue;
     nextVNode = vRoot;
     return HOOKS[CURRENT_HOOK_ID];
