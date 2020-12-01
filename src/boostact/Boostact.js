@@ -25,7 +25,7 @@ const createTextElement = (text) => {
 const createElement = (type, props, ...children) => {
   const inputChildren = [];
   children.forEach((child) => {
-    if (!child) return;
+    if (child === undefined || child === null) return;
 
     if (typeof child !== "object") {
       inputChildren.push(createTextElement(child));
