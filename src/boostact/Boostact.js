@@ -248,7 +248,7 @@ const updateNode = (currentNode) => {
 
         if (name === "style") {
           Object.keys(newProps[name]).forEach((prop) => {
-            dom["style"][prop] = newProps[name][prop];
+            dom[name][prop] = newProps[name][prop];
           });
         }
       }
