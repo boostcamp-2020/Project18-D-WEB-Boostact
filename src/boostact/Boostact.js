@@ -163,7 +163,7 @@ const isUnchanged = (curChild, vChild) => {
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
 
-  if (vChild && vChild.parent.effectTag === "PLACEMENT") {
+  if (vChild.parent.effectTag === "PLACEMENT") {
     vChild.alternate = curChild;
     vChild.dom = null;
     vChild.effectTag = "PLACEMENT";
