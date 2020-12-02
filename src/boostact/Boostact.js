@@ -1,5 +1,4 @@
 /* eslint-disable no-restricted-syntax */
-/** @jsx createElement */
 
 let vRoot = null;
 let currentRoot = null;
@@ -12,7 +11,6 @@ const FIRST_CHILD = 0;
 
 let HOOKS = [];
 let HOOK_ID = 0;
-let USECONTEXT_ITEM_ID = 0;
 
 const createTextElement = (text) => {
   return {
@@ -62,7 +60,6 @@ const workLoop = (deadline) => {
     currentRoot = vRoot;
     vRoot = null;
     HOOK_ID = 0;
-    USECONTEXT_ITEM_ID = 0;
   }
   requestIdleCallback(workLoop);
 };
@@ -75,6 +72,10 @@ const appendVNode = (vNode, children) => {
     const vChild = { ...children[index] };
     if (typeof vChild.type === "function") {
       vChild = vChild.type(vChild.props);
+    }
+    if(vChild.type === "CONTEXT"){
+      children.splice(index,1);
+      children = [...children, ...vChild.props.children]
     }
     if (vChild) {
       vChild.parent = vNode;
@@ -109,22 +110,12 @@ const makeVNode = (vNode) => {
 };
 
 const makeVRoot = () => {
-  if (typeof component?.type === "function") {
-    const temp = component;
-    component = component.type(component.props.value);
-    Object.keys(temp.props).forEach((prop) => {
-      component.props[prop] = temp.props[prop];
-    });
-    vRoot = component;
-  }
-
   vRoot = {
     type: component.type,
     dom: currentRoot?.dom,
     alternate: currentRoot,
     props: {
       ...component.props,
-      children: [...component.props.children],
     },
     parent: {
       dom: container,
@@ -313,9 +304,7 @@ const useReducer = (reducer, initialState) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
   const currentValue = HOOKS[CURRENT_HOOK_ID];
   const dispatch = (action) => {
-    console.log(HOOKS[CURRENT_HOOK_ID]);
     HOOKS[CURRENT_HOOK_ID] = reducer(HOOKS[CURRENT_HOOK_ID], action);
-    console.log(HOOKS[CURRENT_HOOK_ID]);
     if (currentValue !== HOOKS[CURRENT_HOOK_ID]) nextVNode = vRoot;
   };
 
@@ -352,25 +341,21 @@ const useEffect = (fn, arr) => {
 
 const createContext = (defaultValue) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
-  const useContext_id = USECONTEXT_ITEM_ID++;
   const useContextHook = {
-    value: null,
-    Provider: (value) => {
-      HOOKS[CURRENT_HOOK_ID][useContext_id].value = value;
-      return <div></div>;
+    value: [defaultValue],
+    Provider: (props) => {
+      HOOKS[CURRENT_HOOK_ID].value.push(props.value);
+      return {type:"CONTEXT", props:{children:props.children},context:HOOKS[CURRENT_HOOK_ID]};
     },
   };
 
-  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || [];
-  HOOKS[CURRENT_HOOK_ID].push(useContextHook);
+  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || useContextHook;
 
-  HOOKS[CURRENT_HOOK_ID][useContext_id].value = defaultValue;
-
-  return HOOKS[CURRENT_HOOK_ID][useContext_id];
+  return HOOKS[CURRENT_HOOK_ID];
 };
 
 const useContext = (context) => {
-  return context.value;
+  return context.value[context.value.length - 1];
 };
 
 export default { render, createElement, useState, useEffect, createContext, useContext, useReducer };
