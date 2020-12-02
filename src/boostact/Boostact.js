@@ -8,9 +8,12 @@ let component, container;
 
 const deletionQueue = [];
 const FIRST_CHILD = 0;
+const INIT_VALUE = 0;
 
 let HOOKS = [];
 let HOOK_ID = 0;
+
+let ELEMENT_ID = 1;
 
 const createTextElement = (text) => {
   return {
@@ -23,7 +26,9 @@ const createTextElement = (text) => {
 const createElement = (type, props, ...children) => {
   const inputChildren = [];
   children.forEach((child) => {
-    if (child === undefined || child === null) return;
+    if (child === undefined || child === null) {
+      throw new TypeError("text have not to be a null or undefined.");
+    }
 
     if (typeof child !== "object") {
       inputChildren.push(createTextElement(child));
@@ -36,21 +41,25 @@ const createElement = (type, props, ...children) => {
     inputChildren.push(child);
   });
 
-  return {
+  const element = {
     type,
     props: {
       ...props,
       children: inputChildren,
     },
   };
+  if (typeof type !== "function") {
+    element.ELEMENT_ID = ELEMENT_ID++;
+  }
+
+  return element;
 };
 
 const workLoop = (deadline) => {
   let isIdle = false;
   if (nextVNode === vRoot) {
     component = typeof element.type === "function" ? element.type(element.props) : element;
-    makeVRoot();
-    nextVNode = vRoot;
+    nextVNode = makeVRoot();
   }
 
   while (nextVNode && !isIdle) {
@@ -61,7 +70,8 @@ const workLoop = (deadline) => {
     reflectDOM(vRoot);
     currentRoot = vRoot;
     vRoot = null;
-    HOOK_ID = 0;
+    HOOK_ID = INIT_VALUE;
+    ELEMENT_ID = INIT_VALUE;
   }
   requestIdleCallback(workLoop);
 };
@@ -75,13 +85,17 @@ const appendVNode = (vNode, children) => {
     if (typeof vChild.type === "function") {
       vChild = vChild.type(vChild.props);
     }
-    if(vChild.type === "CONTEXT"){
-      children.splice(index,1);
-      children = [...children, ...vChild.props.children]
+
+    if (vChild.type === "CONTEXT") {
+      children[index] = [...vChild.props.children];
+      children = children.flat(Infinity);
+      continue;
     }
+
     if (vChild) {
       vChild.parent = vNode;
     }
+
     if (index === FIRST_CHILD) {
       vNode.child = vChild;
       preSibling = vNode.child;
@@ -89,7 +103,9 @@ const appendVNode = (vNode, children) => {
       preSibling.sibling = vChild;
       preSibling = preSibling.sibling;
     }
+
     determineState(curChild, vChild);
+
     if (curChild) {
       curChild = curChild.sibling;
     }
@@ -99,6 +115,7 @@ const appendVNode = (vNode, children) => {
 
 const makeVNode = (vNode) => {
   appendVNode(vNode, vNode.props && vNode.props.children);
+
   if (vNode.child) {
     return vNode.child;
   }
@@ -111,8 +128,21 @@ const makeVNode = (vNode) => {
   return vNode.parent && vNode.parent.sibling;
 };
 
+const isRootStartedFunction = () => {
+  if (typeof component?.type === "function") {
+    const temp = component;
+    component = component.type(component.props.value);
+    Object.keys(temp.props).forEach((prop) => {
+      component.props[prop] = temp.props[prop];
+    });
+    vRoot = component;
+  }
+};
+
 const makeVRoot = () => {
-  vRoot = {
+  isRootStartedFunction();
+
+  const temp = {
     type: component.type,
     dom: currentRoot && currentRoot.dom,
     alternate: currentRoot,
@@ -123,7 +153,10 @@ const makeVRoot = () => {
       dom: container,
     },
     effectTag: currentRoot ? "UPDATE" : "PLACEMENT",
+    ELEMENT_ID: ELEMENT_ID,
   };
+  vRoot = temp;
+  return temp;
 };
 
 const shallowEqual = (object1, object2) => {
@@ -143,11 +176,9 @@ const shallowEqual = (object1, object2) => {
 };
 
 const isUnchanged = (curChild, vChild) => {
-  // props 비교
   const filterChildren = (child) => Object.fromEntries(Object.entries(child.props).filter(([key]) => key !== "children"));
   const curProps = filterChildren(curChild);
   const vProps = filterChildren(vChild);
-
   return shallowEqual(curProps, vProps);
 };
 
@@ -229,6 +260,7 @@ const updateNode = (currentNode) => {
       }
     }
   }
+
   for (const name in newProps) {
     if (name !== "children") {
       if (name.startsWith("on") && typeof newProps[name] === "function") {
@@ -272,17 +304,19 @@ const reflectDOM = (node) => {
       case "NONE":
         break;
       default:
-        console.log("알 수 없는 태그입니다!");
-        break;
+        throw new Error("reflectDOM : currentNode.effectTag is undefined.");
     }
+
     if (currentNode.child) {
       currentNode = currentNode.child;
       continue;
     }
+
     if (currentNode.sibling) {
       currentNode = currentNode.sibling;
       continue;
     }
+
     while (currentNode.parent && !currentNode.parent.sibling) {
       currentNode = currentNode.parent;
     }
@@ -305,7 +339,6 @@ const useState = (initValue) => {
   };
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
-
 
 const useReducer = (reducer, initialState) => {
   HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initialState;
@@ -352,8 +385,9 @@ const createContext = (defaultValue) => {
   const useContextHook = {
     value: [defaultValue],
     Provider: (props) => {
+      // HOOKS[CURRENT_HOOK_ID].value = props.value;
       HOOKS[CURRENT_HOOK_ID].value.push(props.value);
-      return {type:"CONTEXT", props:{children:props.children},context:HOOKS[CURRENT_HOOK_ID]};
+      return { type: "CONTEXT", props: { children: props.children }, context: HOOKS[CURRENT_HOOK_ID] };
     },
   };
 
@@ -367,4 +401,3 @@ const useContext = (context) => {
 };
 
 export default { render, createElement, useState, useEffect, createContext, useContext, useReducer };
-      
