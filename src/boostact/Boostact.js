@@ -135,7 +135,11 @@ const shallowEqual = (object1, object2) => {
   }
 
   for (let key of keys1) {
-    if (object1[key] !== object2[key]) {
+    if (object1[key] && key === "style") {
+      if (!shallowEqual(object1[key], object2[key])) {
+        return false;
+      }
+    } else if (object1[key] !== object2[key]) {
       return false;
     }
   }
@@ -333,6 +337,7 @@ const useEffect = (fn, arr) => {
         HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
         HOOKS[CURRENT_HOOK_ID].cleanUp();
         HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+        return true;
       }
     });
   } else if (!HOOKS[CURRENT_HOOK_ID]) {
