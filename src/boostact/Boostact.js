@@ -120,7 +120,7 @@ const appendVNode = (vNode, children) => {
     if (index === FIRST_CHILD) {
       vNode.child = vChild;
       preSibling = vNode.child;
-    } else {
+    } else if (preSibling) {
       preSibling.sibling = vChild;
       preSibling = preSibling.sibling;
     }
@@ -206,7 +206,7 @@ const isUnchanged = (curChild, vChild) => {
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
 
-  if (vChild.parent.effectTag === "PLACEMENT") {
+  if (vChild && vChild.parent.effectTag === "PLACEMENT") {
     vChild.alternate = curChild;
     vChild.dom = null;
     vChild.effectTag = "PLACEMENT";
