@@ -14,13 +14,11 @@ let HOOKS = [];
 let HOOK_ID = 0;
 
 let ELEMENT_ID = 0;
-let USECONTEXT_ID = 0;
 
 const createTextElement = (text) => {
   return {
     type: "TEXT_NODE",
     props: { nodeValue: text },
-    children: [],
     value: null,
   };
 };
@@ -76,7 +74,6 @@ const workLoop = (deadline) => {
     vRoot = undefined;
     HOOK_ID = INIT_VALUE;
     ELEMENT_ID = INIT_VALUE;
-    USECONTEXT_ID = INIT_VALUE;
   }
   requestIdleCallback(workLoop);
 };
@@ -89,33 +86,30 @@ const appendVNode = (vNode, children) => {
     if (vNode.type == "TEXT_NODE") {
       break;
     }
+
     let vChild;
     if (children && children[index] !== undefined) {
       vChild = { ...children[index] };
-      console.log(vChild);
     }
 
     if (vChild) {
-    if (typeof vChild.type === "function") {
-      const contextTemp = vChild;
-      //console.log(contextTemp);
-      vChild = vChild.type(vChild.props);
-      if (contextTemp.props.value) {
-        console.log("vChild : ", vChild);
-        vChild.props.value = contextTemp.props.value;
-        //        console.log(vChild.hook?.value);
+      if (typeof vChild.type === "function") {
+        const contextTemp = vChild;
+        vChild = vChild.type(vChild.props);
+        if (contextTemp.props.value) {
+          vChild.props.value = contextTemp.props.value;
+        }
       }
-    }
+      console.log("vChild : ", vChild);
 
       if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
-      children[index] = [...vChild.props.children];
-      children = children.flat(Infinity);
-      children.forEach((child) => {
-        child.providerID = vChild.providerID;
-        child.props.value = vChild.props.value;
-      });
-      continue;
-    }
+        children[index] = [...vChild.props.children];
+        children = children.flat(Infinity);
+        children.forEach((child) => {
+          child.props.value = vChild.props.value;
+        });
+        continue;
+      }
     }
 
     if (vChild) {
@@ -237,11 +231,12 @@ const determineState = (curChild, vChild) => {
 const render = (el, root) => {
   element = el;
   container = root;
-  requestIdleCallback(workLoop);
 };
+requestIdleCallback(workLoop);
 
 const VNodeToRNode = (vNode) => {
   const newNode = vNode.type !== "TEXT_NODE" ? document.createElement(vNode.type) : document.createTextNode("");
+
   Object.keys(vNode.props)
     .filter((prop) => prop !== "children")
     .forEach((attribute) => {
@@ -263,7 +258,7 @@ const placeNode = (currentNode) => {
   const RNode = VNodeToRNode(currentNode);
   const parent = (currentNode && currentNode.parent) || currentNode;
   currentNode.dom = RNode;
-  if (currentNode.alternate) {
+  if (currentNode.alternate && currentNode.parent.effectTag !== "PLACEMENT") {
     parent.dom.replaceChild(RNode, currentNode.alternate.dom);
   } else {
     parent.dom.appendChild(RNode);
@@ -305,16 +300,12 @@ const updateNode = (currentNode) => {
   }
 };
 
-const deleteNode = (currentNode) => {
-  currentNode.parent.dom.removeChild(currentNode);
-  deletionQueue.unshift();
-};
-
 const reflectDOM = (node) => {
   let currentNode = node;
   deletionQueue.forEach((node) => {
-    reflectDOM(node);
+    node.parent.dom.removeChild(node.dom);
   });
+  deletionQueue.length = 0;
 
   while (currentNode) {
     switch (currentNode.effectTag) {
@@ -323,9 +314,6 @@ const reflectDOM = (node) => {
         break;
       case "UPDATE":
         updateNode(currentNode);
-        break;
-      case "DELETION":
-        deleteNode(currentNode);
         break;
       case "NONE":
         break;
