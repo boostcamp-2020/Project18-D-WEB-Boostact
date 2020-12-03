@@ -73,7 +73,7 @@ const workLoop = (deadline) => {
   if (!nextVNode && vRoot) {
     reflectDOM(vRoot);
     currentRoot = vRoot;
-    vRoot = null;
+    vRoot = undefined;
     HOOK_ID = INIT_VALUE;
     ELEMENT_ID = INIT_VALUE;
     USECONTEXT_ID = INIT_VALUE;
