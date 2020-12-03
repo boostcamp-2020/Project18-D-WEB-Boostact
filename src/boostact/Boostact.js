@@ -56,13 +56,20 @@ const appendVNode = (vNode, children) => {
   let preSibling;
   let curChild = vNode.alternate && vNode.alternate.child;
   while ((children && index < children.length) || curChild) {
-    const vChild = { ...children[index] };
+    if (vNode.type == "TEXT_NODE") {
+      break;
+    }
+    let vChild = null;
+    if (children && children[index] !== undefined) {
+      vChild = { ...children[index] };
     if (typeof vChild.type === "function") {
       vChild = vChild.type(vChild.props);
+        if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
+          children[index] = [...vChild.props.children];
+          children = children.flat(Infinity);
+          continue;
     }
-    if(vChild.type === "CONTEXT"){
-      children.splice(index,1);
-      children = [...children, ...vChild.props.children]
+    }
     }
     if (vChild) {
       vChild.parent = vNode;
@@ -70,7 +77,7 @@ const appendVNode = (vNode, children) => {
     if (index === FIRST_CHILD) {
       vNode.child = vChild;
       preSibling = vNode.child;
-    } else {
+    } else if (preSibling) {
       preSibling.sibling = vChild;
       preSibling = preSibling.sibling;
     }
@@ -83,7 +90,8 @@ const appendVNode = (vNode, children) => {
 };
 
 const makeVNode = (vNode) => {
-  appendVNode(vNode, vNode.props && vNode.props.children);
+  debugger;
+  appendVNode(vNode, vNode.props.children);
   if (vNode.child) {
     return vNode.child;
   }
