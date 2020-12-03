@@ -86,7 +86,12 @@ const appendVNode = (vNode, children) => {
   let preSibling;
   let curChild = vNode.alternate && vNode.alternate.child;
   while ((children && index < children.length) || curChild) {
-    const vChild = { ...children[index] };
+    let vChild;
+    if (children[index] !== undefined) {
+      vChild = { ...children[index] };
+      console.log(vChild);
+    }
+
     if (typeof vChild.type === "function") {
       const contextTemp = vChild;
       //console.log(contextTemp);
