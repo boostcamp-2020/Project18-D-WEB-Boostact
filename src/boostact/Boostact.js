@@ -331,18 +331,18 @@ const useEffect = (fn, arr) => {
   };
 
   if (HOOKS[CURRENT_HOOK_ID] && HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
-    const beforeArr = HOOKS[CURRENT_HOOK_ID].beforeArr;
+    const { beforeArr } = HOOKS[CURRENT_HOOK_ID];
     beforeArr.some((el, i) => {
       if (el !== arr[i]) {
         HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
         HOOKS[CURRENT_HOOK_ID].cleanUp();
-        HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+        HOOKS[CURRENT_HOOK_ID].cleanUp = fn;
         return true;
       }
     });
   } else if (!HOOKS[CURRENT_HOOK_ID]) {
     HOOKS[CURRENT_HOOK_ID] = useEffectHook;
-    HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+    HOOKS[CURRENT_HOOK_ID].cleanUp = fn;
     if (arr.length) {
       HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
     }
