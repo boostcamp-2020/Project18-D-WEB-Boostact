@@ -1,6 +1,7 @@
 import Boostact from "../src/boostact/Boostact";
 import Route from "../src/boostact/Route";
 import Home from "./Home";
+import Timer from "./Timer";
 
 /** @jsx Boostact.createElement */
 
@@ -17,6 +18,11 @@ const About = (props) => {
         <li>
           <Route.Link to="/about">
             <span>About</span>
+          </Route.Link>
+        </li>
+        <li>
+          <Route.Link to="/Timer">
+            <span>Timer</span>
           </Route.Link>
         </li>
       </ul>
