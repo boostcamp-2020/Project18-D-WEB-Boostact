@@ -26,38 +26,16 @@ const createTextElement = (text) => {
 };
 
 const createElement = (type, props, ...children) => {
-  const inputChildren = [];
-  children.forEach((child) => {
-    if (child === undefined || child === null) {
-      throw new TypeError("text have not to be a null or undefined.");
-    }
-
-    if (typeof child !== "object") {
-      inputChildren.push(createTextElement(child));
-      return;
-    }
-    if (child && child.length) {
-      child.forEach((child) => inputChildren.push(child));
-      return;
-    }
-    inputChildren.push(child);
-  });
-
-  const element = {
+  const copiedChildren = children.flat(Infinity);
+  return {
     type,
     props: {
       ...props,
-      children: inputChildren,
+      children: copiedChildren.map((child) => (typeof child === "object" ? child : createTextElement(child))),
     },
     value: null,
   };
-
-  if (typeof type !== "function") {
-    element.ELEMENT_ID = ELEMENT_ID++;
-  }
-
-  return element;
-};
+}
 
 const workLoop = (deadline) => {
   let isIdle = false;
@@ -89,33 +67,22 @@ const appendVNode = (vNode, children) => {
     if (vNode.type == "TEXT_NODE") {
       break;
     }
-    let vChild;
+
+    let vChild = null;
     if (children && children[index] !== undefined) {
       vChild = { ...children[index] };
-      console.log(vChild);
-    }
 
-    if (vChild) {
-    if (typeof vChild.type === "function") {
-      const contextTemp = vChild;
-      //console.log(contextTemp);
-      vChild = vChild.type(vChild.props);
-      if (contextTemp.props.value) {
-        console.log("vChild : ", vChild);
-        vChild.props.value = contextTemp.props.value;
-        //        console.log(vChild.hook?.value);
-      }
-    }
+        if (typeof vChild.type === "function") {
+          const contextTemp = vChild;
+          //console.log(contextTemp);
+          vChild = vChild.type(vChild.props);
 
-      if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
-      children[index] = [...vChild.props.children];
-      children = children.flat(Infinity);
-      children.forEach((child) => {
-        child.providerID = vChild.providerID;
-        child.props.value = vChild.props.value;
-      });
-      continue;
-    }
+            if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
+              children[index] = [...vChild.props.children];
+              children = children.flat(Infinity);
+              continue;
+            }
+        }
     }
 
     if (vChild) {
@@ -140,6 +107,7 @@ const appendVNode = (vNode, children) => {
 };
 
 const makeVNode = (vNode) => {
+
   appendVNode(vNode, vNode.props && vNode.props.children);
 
   if (vNode.child) {
@@ -194,7 +162,11 @@ const shallowEqual = (object1, object2) => {
   }
 
   for (let key of keys1) {
-    if (object1[key] !== object2[key]) {
+    if (object1[key] && key === "style") {
+      if (!shallowEqual(object1[key], object2[key])) {
+        return false;
+      }
+    } else if (object1[key] !== object2[key]) {
       return false;
     }
   }
@@ -305,17 +277,12 @@ const updateNode = (currentNode) => {
   }
 };
 
-const deleteNode = (currentNode) => {
-  currentNode.parent.dom.removeChild(currentNode);
-  deletionQueue.unshift();
-};
-
 const reflectDOM = (node) => {
   let currentNode = node;
   deletionQueue.forEach((node) => {
-    reflectDOM(node);
+    node.parent.dom.removeChild(node.dom);
   });
-
+  deletionQueue.length = 0;
   while (currentNode) {
     switch (currentNode.effectTag) {
       case "PLACEMENT":
@@ -323,9 +290,6 @@ const reflectDOM = (node) => {
         break;
       case "UPDATE":
         updateNode(currentNode);
-        break;
-      case "DELETION":
-        deleteNode(currentNode);
         break;
       case "NONE":
         break;
@@ -386,17 +350,18 @@ const useEffect = (fn, arr) => {
   };
 
   if (HOOKS[CURRENT_HOOK_ID] && HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
-    const beforeArr = HOOKS[CURRENT_HOOK_ID].beforeArr;
+    const { beforeArr } = HOOKS[CURRENT_HOOK_ID];
     beforeArr.some((el, i) => {
       if (el !== arr[i]) {
         HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
         HOOKS[CURRENT_HOOK_ID].cleanUp();
-        HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+        HOOKS[CURRENT_HOOK_ID].cleanUp = fn;
+        return true;
       }
     });
   } else if (!HOOKS[CURRENT_HOOK_ID]) {
     HOOKS[CURRENT_HOOK_ID] = useEffectHook;
-    HOOKS[CURRENT_HOOK_ID].cleanUp = fn();
+    HOOKS[CURRENT_HOOK_ID].cleanUp = fn;
     if (arr.length) {
       HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
     }
