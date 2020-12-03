@@ -14,13 +14,11 @@ let HOOKS = [];
 let HOOK_ID = 0;
 
 let ELEMENT_ID = 0;
-let USECONTEXT_ID = 0;
 
 const createTextElement = (text) => {
   return {
     type: "TEXT_NODE",
     props: { nodeValue: text },
-    children: [],
     value: null,
   };
 };
@@ -54,7 +52,6 @@ const workLoop = (deadline) => {
     vRoot = undefined;
     HOOK_ID = INIT_VALUE;
     ELEMENT_ID = INIT_VALUE;
-    USECONTEXT_ID = INIT_VALUE;
   }
   requestIdleCallback(workLoop);
 };
@@ -73,8 +70,6 @@ const appendVNode = (vNode, children) => {
       vChild = { ...children[index] };
 
         if (typeof vChild.type === "function") {
-          const contextTemp = vChild;
-          //console.log(contextTemp);
           vChild = vChild.type(vChild.props);
 
             if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
@@ -209,11 +204,12 @@ const determineState = (curChild, vChild) => {
 const render = (el, root) => {
   element = el;
   container = root;
-  requestIdleCallback(workLoop);
 };
+requestIdleCallback(workLoop);
 
 const VNodeToRNode = (vNode) => {
   const newNode = vNode.type !== "TEXT_NODE" ? document.createElement(vNode.type) : document.createTextNode("");
+
   Object.keys(vNode.props)
     .filter((prop) => prop !== "children")
     .forEach((attribute) => {
@@ -235,7 +231,7 @@ const placeNode = (currentNode) => {
   const RNode = VNodeToRNode(currentNode);
   const parent = (currentNode && currentNode.parent) || currentNode;
   currentNode.dom = RNode;
-  if (currentNode.alternate) {
+  if (currentNode.alternate && currentNode.parent.effectTag !== "PLACEMENT") {
     parent.dom.replaceChild(RNode, currentNode.alternate.dom);
   } else {
     parent.dom.appendChild(RNode);
@@ -283,6 +279,7 @@ const reflectDOM = (node) => {
     node.parent.dom.removeChild(node.dom);
   });
   deletionQueue.length = 0;
+
   while (currentNode) {
     switch (currentNode.effectTag) {
       case "PLACEMENT":
