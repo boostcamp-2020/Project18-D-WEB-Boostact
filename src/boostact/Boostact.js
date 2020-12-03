@@ -86,12 +86,16 @@ const appendVNode = (vNode, children) => {
   let preSibling;
   let curChild = vNode.alternate && vNode.alternate.child;
   while ((children && index < children.length) || curChild) {
+    if (vNode.type == "TEXT_NODE") {
+      break;
+    }
     let vChild;
-    if (children[index] !== undefined) {
+    if (children && children[index] !== undefined) {
       vChild = { ...children[index] };
       console.log(vChild);
     }
 
+    if (vChild) {
     if (typeof vChild.type === "function") {
       const contextTemp = vChild;
       //console.log(contextTemp);
@@ -103,7 +107,7 @@ const appendVNode = (vNode, children) => {
       }
     }
 
-    if (vChild.type === "CONTEXT") {
+      if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
       children[index] = [...vChild.props.children];
       children = children.flat(Infinity);
       children.forEach((child) => {
@@ -111,6 +115,7 @@ const appendVNode = (vNode, children) => {
         child.props.value = vChild.props.value;
       });
       continue;
+    }
     }
 
     if (vChild) {
