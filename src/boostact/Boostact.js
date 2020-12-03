@@ -20,31 +20,16 @@ const createTextElement = (text) => {
   };
 };
 
-const createElement = (type, props, ...children) => {
-  const inputChildren = [];
-  children.forEach((child) => {
-    if (child === undefined || child === null) return;
-
-    if (typeof child !== "object") {
-      inputChildren.push(createTextElement(child));
-      return;
-    }
-    if (child && child.length) {
-      child.forEach((child) => inputChildren.push(child));
-      return;
-    }
-    inputChildren.push(child);
-  });
-
+function createElement(type, props, ...children) {
+  const copiedChildren = children.flat(Infinity);
   return {
     type,
     props: {
       ...props,
-      children: inputChildren,
+      children: copiedChildren.map((child) => (typeof child === "object" ? child : createTextElement(child))),
     },
   };
-};
-
+}
 const workLoop = (deadline) => {
   let isIdle = false;
   if (nextVNode === vRoot) {
