@@ -8,19 +8,24 @@ let component, container;
 
 const deletionQueue = [];
 const FIRST_CHILD = 0;
+const INIT_VALUE = 0;
 
 let HOOKS = [];
 let HOOK_ID = 0;
+
+let ELEMENT_ID = 0;
+let USECONTEXT_ID = 0;
 
 const createTextElement = (text) => {
   return {
     type: "TEXT_NODE",
     props: { nodeValue: text },
     children: [],
+    value: null,
   };
 };
 
-function createElement(type, props, ...children) {
+const createElement = (type, props, ...children) => {
   const copiedChildren = children.flat(Infinity);
   return {
     type,
@@ -28,14 +33,15 @@ function createElement(type, props, ...children) {
       ...props,
       children: copiedChildren.map((child) => (typeof child === "object" ? child : createTextElement(child))),
     },
+    value: null,
   };
 }
+
 const workLoop = (deadline) => {
   let isIdle = false;
   if (nextVNode === vRoot) {
     component = typeof element.type === "function" ? element.type(element.props) : element;
-    makeVRoot();
-    nextVNode = vRoot;
+    nextVNode = makeVRoot();
   }
 
   while (nextVNode && !isIdle) {
@@ -45,8 +51,10 @@ const workLoop = (deadline) => {
   if (!nextVNode && vRoot) {
     reflectDOM(vRoot);
     currentRoot = vRoot;
-    vRoot = null;
-    HOOK_ID = 0;
+    vRoot = undefined;
+    HOOK_ID = INIT_VALUE;
+    ELEMENT_ID = INIT_VALUE;
+    USECONTEXT_ID = INIT_VALUE;
   }
   requestIdleCallback(workLoop);
 };
@@ -59,21 +67,28 @@ const appendVNode = (vNode, children) => {
     if (vNode.type == "TEXT_NODE") {
       break;
     }
+
     let vChild = null;
     if (children && children[index] !== undefined) {
       vChild = { ...children[index] };
-    if (typeof vChild.type === "function") {
-      vChild = vChild.type(vChild.props);
-        if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
-          children[index] = [...vChild.props.children];
-          children = children.flat(Infinity);
-          continue;
+
+        if (typeof vChild.type === "function") {
+          const contextTemp = vChild;
+          //console.log(contextTemp);
+          vChild = vChild.type(vChild.props);
+
+            if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
+              children[index] = [...vChild.props.children];
+              children = children.flat(Infinity);
+              continue;
+            }
+        }
     }
-    }
-    }
+
     if (vChild) {
       vChild.parent = vNode;
     }
+
     if (index === FIRST_CHILD) {
       vNode.child = vChild;
       preSibling = vNode.child;
@@ -81,7 +96,9 @@ const appendVNode = (vNode, children) => {
       preSibling.sibling = vChild;
       preSibling = preSibling.sibling;
     }
+
     determineState(curChild, vChild);
+
     if (curChild) {
       curChild = curChild.sibling;
     }
@@ -90,8 +107,9 @@ const appendVNode = (vNode, children) => {
 };
 
 const makeVNode = (vNode) => {
-  debugger;
-  appendVNode(vNode, vNode.props.children);
+
+  appendVNode(vNode, vNode.props && vNode.props.children);
+
   if (vNode.child) {
     return vNode.child;
   }
@@ -104,8 +122,21 @@ const makeVNode = (vNode) => {
   return vNode.parent && vNode.parent.sibling;
 };
 
+const isRootStartedFunction = () => {
+  if (typeof component?.type === "function") {
+    const temp = component;
+    component = component.type(component.props.value);
+    Object.keys(temp.props).forEach((prop) => {
+      component.props[prop] = temp.props[prop];
+    });
+    vRoot = component;
+  }
+};
+
 const makeVRoot = () => {
-  vRoot = {
+  isRootStartedFunction();
+
+  const temp = {
     type: component.type,
     dom: currentRoot && currentRoot.dom,
     alternate: currentRoot,
@@ -116,7 +147,10 @@ const makeVRoot = () => {
       dom: container,
     },
     effectTag: currentRoot ? "UPDATE" : "PLACEMENT",
+    ELEMENT_ID: ELEMENT_ID,
   };
+  vRoot = temp;
+  return temp;
 };
 
 const shallowEqual = (object1, object2) => {
@@ -140,11 +174,9 @@ const shallowEqual = (object1, object2) => {
 };
 
 const isUnchanged = (curChild, vChild) => {
-  // props 비교
   const filterChildren = (child) => Object.fromEntries(Object.entries(child.props).filter(([key]) => key !== "children"));
   const curProps = filterChildren(curChild);
   const vProps = filterChildren(vChild);
-
   return shallowEqual(curProps, vProps);
 };
 
@@ -226,6 +258,7 @@ const updateNode = (currentNode) => {
       }
     }
   }
+
   for (const name in newProps) {
     if (name !== "children") {
       if (name.startsWith("on") && typeof newProps[name] === "function") {
@@ -261,17 +294,19 @@ const reflectDOM = (node) => {
       case "NONE":
         break;
       default:
-        console.log("알 수 없는 태그입니다!");
-        break;
+        throw new Error("reflectDOM : currentNode.effectTag is undefined.");
     }
+
     if (currentNode.child) {
       currentNode = currentNode.child;
       continue;
     }
+
     if (currentNode.sibling) {
       currentNode = currentNode.sibling;
       continue;
     }
+
     while (currentNode.parent && !currentNode.parent.sibling) {
       currentNode = currentNode.parent;
     }
@@ -294,7 +329,6 @@ const useState = (initValue) => {
   };
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
-
 
 const useReducer = (reducer, initialState) => {
   HOOKS[HOOK_ID] = HOOKS[HOOK_ID] || initialState;
@@ -337,24 +371,22 @@ const useEffect = (fn, arr) => {
   }
 };
 
+const useContext = (context) => {
+  return context.value[context.value.length - 1];
+};
+
 const createContext = (defaultValue) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
   const useContextHook = {
     value: [defaultValue],
     Provider: (props) => {
       HOOKS[CURRENT_HOOK_ID].value.push(props.value);
-      return {type:"CONTEXT", props:{children:props.children},context:HOOKS[CURRENT_HOOK_ID]};
+      return { type: "CONTEXT", props: { children: props.children }, hook: HOOKS[CURRENT_HOOK_ID] };
     },
   };
 
   HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || useContextHook;
-
   return HOOKS[CURRENT_HOOK_ID];
 };
 
-const useContext = (context) => {
-  return context.value[context.value.length - 1];
-};
-
 export default { render, createElement, useState, useEffect, createContext, useContext, useReducer };
-      
