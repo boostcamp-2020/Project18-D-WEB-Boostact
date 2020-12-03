@@ -244,17 +244,12 @@ const updateNode = (currentNode) => {
   }
 };
 
-const deleteNode = (currentNode) => {
-  currentNode.parent.dom.removeChild(currentNode);
-  deletionQueue.unshift();
-};
-
 const reflectDOM = (node) => {
   let currentNode = node;
   deletionQueue.forEach((node) => {
-    reflectDOM(node);
+    node.parent.dom.removeChild(node.dom);
   });
-
+  deletionQueue.length = 0;
   while (currentNode) {
     switch (currentNode.effectTag) {
       case "PLACEMENT":
@@ -262,9 +257,6 @@ const reflectDOM = (node) => {
         break;
       case "UPDATE":
         updateNode(currentNode);
-        break;
-      case "DELETION":
-        deleteNode(currentNode);
         break;
       case "NONE":
         break;
