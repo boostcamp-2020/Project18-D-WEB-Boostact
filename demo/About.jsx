@@ -2,6 +2,8 @@ import Boostact from "../src/boostact/Boostact";
 import Route from "../src/boostact/Route";
 import Home from "./Home";
 import Timer from "./Timer";
+import Todo from "./todoList/todoTemplate";
+import Search from "./searchpage/main";
 
 /** @jsx Boostact.createElement */
 
@@ -25,11 +27,24 @@ const About = (props) => {
             <span>Timer</span>
           </Route.Link>
         </li>
+        <li>
+          <Route.Link to="/todo">
+            <span>Todo</span>
+          </Route.Link>
+        </li>
+        <li>
+          <Route.Link to="/search">
+            <span>search</span>
+          </Route.Link>
+        </li>
       </ul>
       <hr />
       <div id="ROUTING">
         <Route.Route path="/home" component={Home}></Route.Route>
         <Route.Route path="/about" component={About}></Route.Route>
+        <Route.Route path="/timer" component={Timer}></Route.Route>
+        <Route.Route path="/todo" component={Todo}></Route.Route>
+        <Route.Route path="/search" component={Search}></Route.Route>
         <div>
           <h1>Hello World</h1>
           <h2>This is About!</h2>

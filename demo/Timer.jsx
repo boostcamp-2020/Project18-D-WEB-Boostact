@@ -2,6 +2,8 @@ import Boostact from "../src/boostact/Boostact";
 import Route from "../src/boostact/Route";
 import Home from "./Home";
 import About from "./About";
+import Todo from "./todoList/todoTemplate";
+import Search from "./searchpage/main";
 /** @jsx Boostact.createElement */
 
 const numPad = (num) => {
@@ -19,12 +21,10 @@ const Timer = () => {
   let [seconds, setSeconds] = Boostact.useState(startTime.getSeconds());
   let beforeOrAfter = "PM";
 
-  setTimeout(() => {
-    const timer = new Date();
-    setSeconds(numPad(timer.getSeconds()));
-    setMinutes(numPad(timer.getMinutes()));
-    setHours(numPad(timer.getHours()));
-  }, 1000);
+  const timer = new Date();
+  setSeconds(numPad(timer.getSeconds()));
+  setMinutes(numPad(timer.getMinutes()));
+  setHours(numPad(timer.getHours()));
 
   const checkTimer = () => {
     console.log("타이머가 시작됩니다.");
@@ -33,7 +33,7 @@ const Timer = () => {
     };
   };
 
-  Boostact.useEffect(checkTimer, [seconds]);
+  //  Boostact.useEffect(checkTimer, [seconds]);
 
   return (
     <div>
@@ -54,12 +54,24 @@ const Timer = () => {
             <span>Timer</span>
           </Route.Link>
         </li>
+        <li>
+          <Route.Link to="/todo">
+            <span>Todo</span>
+          </Route.Link>
+        </li>
+        <li>
+          <Route.Link to="/search">
+            <span>search</span>
+          </Route.Link>
+        </li>
       </ul>
       <hr />
       <div id="ROUTING">
         <Route.Route path="/home" component={Home}></Route.Route>
         <Route.Route path="/about" component={About}></Route.Route>
-        <Route.Route path="/Timer" component={Timer}></Route.Route>
+        <Route.Route path="/timer" component={Timer}></Route.Route>
+        <Route.Route path="/todo" component={Todo}></Route.Route>
+        <Route.Route path="/search" component={Search}></Route.Route>
         <div>
           <div
             style={{
