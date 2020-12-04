@@ -30,7 +30,9 @@
   "keywords": [],
   "description": "### Project18-D-VanillaMarket https://github.com/boostcamp-2020/Project18-D-WEB-VanillaMarket",
   "dependencies": {
-    "preact": "^10.5.7"
+    "@fortawesome/fontawesome-free": "^5.15.1",
+    "preact": "^10.5.7",
+    "vanilla-router": "^1.2.8"
   },
   "repository": {
     "type": "git",
