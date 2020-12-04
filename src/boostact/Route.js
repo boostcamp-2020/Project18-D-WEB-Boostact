@@ -2,6 +2,10 @@ import Router from "vanilla-router";
 import Boostact from "./Boostact";
 import Home from "../../demo/Home";
 import About from "../../demo/About";
+import Timer from "../../demo/Timer";
+import Todo from "../../demo/todoList/todoTemplate";
+import Search from "../../demo/searchpage/main";
+
 /** @jsx Boostact.createElement */
 
 const Link = (props) => {
@@ -18,7 +22,6 @@ const Link = (props) => {
 };
 
 const Route = (props) => {
-  console.log(props);
   return { type: "ROUTER", props };
 };
 
@@ -38,12 +41,28 @@ const router = new Router({
 router
   .add("/home", function () {
     const container = document.getElementById("root");
+    console.log(Boostact.initHook());
     Boostact.render(<Home />, container);
   })
   .add("about", () => {
-    console.log("About Page");
     const container = document.getElementById("root");
+    console.log(Boostact.initHook());
     Boostact.render(<About />, container);
+  })
+  .add("timer", () => {
+    const container = document.getElementById("root");
+    console.log(Boostact.initHook());
+    Boostact.render(<Timer />, container);
+  })
+  .add("todo", () => {
+    const container = document.getElementById("root");
+    console.log(Boostact.initHook());
+    Boostact.render(<Todo />, container);
+  })
+  .add("search", () => {
+    const container = document.getElementById("root");
+    console.log(Boostact.initHook());
+    Boostact.render(<Search />, container);
   });
 
 window.router = router;

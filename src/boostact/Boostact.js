@@ -15,6 +15,12 @@ let HOOK_ID = 0;
 
 let ELEMENT_ID = 0;
 
+const initHook = () => {
+  const temp = HOOKS;
+  HOOKS = [];
+  return temp;
+};
+
 const createTextElement = (text) => {
   return {
     type: "TEXT_NODE",
@@ -33,7 +39,7 @@ const createElement = (type, props, ...children) => {
     },
     value: null,
   };
-}
+};
 
 const workLoop = (deadline) => {
   let isIdle = false;
@@ -69,15 +75,15 @@ const appendVNode = (vNode, children) => {
     if (children && children[index] !== undefined) {
       vChild = { ...children[index] };
 
-        if (typeof vChild.type === "function") {
-          vChild = vChild.type(vChild.props);
+      if (typeof vChild.type === "function") {
+        vChild = vChild.type(vChild.props);
 
-            if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
-              children[index] = [...vChild.props.children];
-              children = children.flat(Infinity);
-              continue;
-            }
+        if (vChild.type === "CONTEXT" || vChild.type === "LINK" || vChild.type === "ROUTER") {
+          children[index] = [...vChild.props.children];
+          children = children.flat(Infinity);
+          continue;
         }
+      }
     }
 
     if (vChild) {
@@ -102,7 +108,6 @@ const appendVNode = (vNode, children) => {
 };
 
 const makeVNode = (vNode) => {
-
   appendVNode(vNode, vNode.props && vNode.props.children);
 
   if (vNode.child) {
@@ -386,4 +391,4 @@ const createContext = (defaultValue) => {
   return HOOKS[CURRENT_HOOK_ID];
 };
 
-export default { render, createElement, useState, useEffect, createContext, useContext, useReducer };
+export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook };
