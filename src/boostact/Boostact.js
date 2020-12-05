@@ -11,11 +11,11 @@ const deletionQueue = [];
 const FIRST_CHILD = 0;
 const INIT_VALUE = 0;
 
-let HOOKS = [];
+const HOOKS = [];
 let HOOK_ID = 0;
 
 const initHook = () => {
-  HOOKS = [];
+  HOOKS.length = HOOK_ID;
   return HOOKS;
 };
 
@@ -129,7 +129,8 @@ const makeVRoot = () => {
     parent: {
       dom: container,
     },
-    effectTag: currentRoot ? "UPDATE" : "PLACEMENT",
+    child: currentRoot && currentRoot.child,
+    effectTag: currentRoot && currentRoot.type === component.type ? "UPDATE" : "PLACEMENT",
   };
   return temp;
 };
@@ -193,6 +194,14 @@ const render = (el, root) => {
   vRoot = makeVRoot();
   nextVNode = vRoot;
 };
+
+const reRender = () => {
+  if (!nextVNode) {
+    vRoot = makeVRoot();
+    nextVNode = vRoot;
+  }
+};
+
 requestIdleCallback(workLoop);
 
 const VNodeToRNode = (vNode) => {
@@ -304,9 +313,8 @@ const useState = (initValue) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
 
   const setState = (nextValue) => {
-    typeof nextVNode === "function" ? (HOOKS[CURRENT_HOOK_ID] = nextValue(HOOKS[CURRENT_HOOK_ID])) : (HOOKS[CURRENT_HOOK_ID] = nextValue);
-    vRoot = makeVRoot();
-    nextVNode = vRoot;
+    typeof nextValue === "function" ? (HOOKS[CURRENT_HOOK_ID] = nextValue(HOOKS[CURRENT_HOOK_ID])) : (HOOKS[CURRENT_HOOK_ID] = nextValue);
+    reRender();
   };
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
@@ -318,8 +326,7 @@ const useReducer = (reducer, initialState) => {
   const dispatch = (action) => {
     HOOKS[CURRENT_HOOK_ID] = reducer(HOOKS[CURRENT_HOOK_ID], action);
     if (currentValue !== HOOKS[CURRENT_HOOK_ID]) {
-      vRoot = makeVRoot();
-      nextVNode = vRoot;
+      reRender();
     }
   };
 
@@ -373,4 +380,4 @@ const createContext = (defaultValue) => {
   return HOOKS[CURRENT_HOOK_ID];
 };
 
-export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook };
+export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender };
