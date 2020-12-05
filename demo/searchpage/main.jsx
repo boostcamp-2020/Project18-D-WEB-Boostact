@@ -2,7 +2,6 @@ import Boostact from "../../src/boostact/Boostact";
 import Content from "./content";
 import SearchBar from "./searchbar";
 import mockData from "./mock-data";
-import Router from "../Router";
 /** @jsx Boostact.createElement */
 
 const Search = () => {
@@ -17,7 +16,6 @@ const Search = () => {
   }, [inputText]);
   return (
     <div>
-      <Router></Router>
       <div>
         <SearchBar inputText={inputText} setText={setText} />
         <div>{inputText}</div>

@@ -1,6 +1,5 @@
 import Boostact from "../../src/boostact/Boostact";
 import "@fortawesome/fontawesome-free/js/all";
-import Router from "../Router";
 /** @jsx Boostact.createElement */
 
 const Todo = () => {
@@ -42,7 +41,6 @@ const Todo = () => {
 
   return (
     <div>
-      <Router />
       <div
         className="TodoPanel"
         style={{ width: "90%", marginLeft: "auto", marginTop: "5rem", marginRight: "auto", border: "1px solid #F2F2F2", borderRadius: "10px" }}
