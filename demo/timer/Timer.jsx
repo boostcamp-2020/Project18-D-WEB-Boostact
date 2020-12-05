@@ -17,17 +17,10 @@ const Timer = () => {
   let [seconds, setSeconds] = Boostact.useState(startTime.getSeconds());
   let beforeOrAfter = "PM";
 
-  const timer = new Date();
-  setSeconds(numPad(timer.getSeconds()));
-  setMinutes(numPad(timer.getMinutes()));
-  setHours(numPad(timer.getHours()));
-
-  const checkTimer = () => {
-    console.log("타이머가 시작됩니다.");
-    return () => {
-      console.log("타이머가 멈춰버렸습니다!?");
-    };
-  };
+  // const timer = new Date();
+  // setSeconds(numPad(timer.getSeconds()));
+  // setMinutes(numPad(timer.getMinutes()));
+  // setHours(numPad(timer.getHours()));
 
   //  Boostact.useEffect(checkTimer, [seconds]);
 
