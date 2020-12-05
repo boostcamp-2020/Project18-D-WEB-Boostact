@@ -1,12 +1,8 @@
 import Boostact from "../../src/boostact/Boostact";
 import "@fortawesome/fontawesome-free/js/all";
-import Route from "../../src/boostact/Route";
-import Home from "../Home";
-import Timer from "../Timer";
-import About from "../About";
-import Search from "../searchpage/main";
-
+import Router from "../Router";
 /** @jsx Boostact.createElement */
+
 const Todo = () => {
   const [todo, setTodo] = Boostact.useState([
     {
@@ -46,42 +42,7 @@ const Todo = () => {
 
   return (
     <div>
-      <div id="title">타이틀</div>
-      <ul>
-        <li>
-          <Route.Link to="/home">
-            <span>Home</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/about">
-            <span>About</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/Timer">
-            <span>Timer</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/todo">
-            <span>Todo</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/search">
-            <span>search</span>
-          </Route.Link>
-        </li>
-      </ul>
-      <hr />
-      <div id="ROUTING">
-        <Route.Route path="/home" component={Home}></Route.Route>
-        <Route.Route path="/about" component={About}></Route.Route>
-        <Route.Route path="/timer" component={Timer}></Route.Route>
-        <Route.Route path="/todo" component={Todo}></Route.Route>
-        <Route.Route path="/search" component={Search}></Route.Route>
-      </div>
+      <Router />
       <div
         className="TodoPanel"
         style={{ width: "90%", marginLeft: "auto", marginTop: "5rem", marginRight: "auto", border: "1px solid #F2F2F2", borderRadius: "10px" }}

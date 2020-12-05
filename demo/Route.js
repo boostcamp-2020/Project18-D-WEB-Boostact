@@ -1,10 +1,10 @@
+import Boostact from "../src/boostact/Boostact";
 import Router from "vanilla-router";
-import Boostact from "./Boostact";
-import Home from "../../demo/Home";
-import About from "../../demo/About";
-import Timer from "../../demo/Timer";
-import Todo from "../../demo/todoList/todoTemplate";
-import Search from "../../demo/searchpage/main";
+import Home from "./home/Home";
+import About from "./about/About";
+import Timer from "./timer/Timer";
+import Todo from "./todoList/todoTemplate";
+import Search from "./searchpage/main";
 
 /** @jsx Boostact.createElement */
 

@@ -1,4 +1,5 @@
-import Boostact from "../src/boostact/Boostact";
+import Boostact from "../../src/boostact/Boostact";
+import Router from "../Router";
 /** @jsx Boostact.createElement */
 
 const numPad = (num) => {
@@ -8,7 +9,7 @@ const numPad = (num) => {
   return num;
 };
 
-const App = () => {
+const Timer = () => {
   const startTime = new Date();
 
   let [hours, setHours] = Boostact.useState(startTime.getHours());
@@ -16,12 +17,10 @@ const App = () => {
   let [seconds, setSeconds] = Boostact.useState(startTime.getSeconds());
   let beforeOrAfter = "PM";
 
-  setTimeout(() => {
-    const timer = new Date();
-    setSeconds(numPad(timer.getSeconds()));
-    setMinutes(numPad(timer.getMinutes()));
-    setHours(numPad(timer.getHours()));
-  }, 1000);
+  const timer = new Date();
+  setSeconds(numPad(timer.getSeconds()));
+  setMinutes(numPad(timer.getMinutes()));
+  setHours(numPad(timer.getHours()));
 
   const checkTimer = () => {
     console.log("타이머가 시작됩니다.");
@@ -30,10 +29,11 @@ const App = () => {
     };
   };
 
-  Boostact.useEffect(checkTimer, [seconds]);
+  //  Boostact.useEffect(checkTimer, [seconds]);
 
   return (
     <div>
+      <Router />
       <div
         style={{
           justifyContent: "center",
@@ -114,4 +114,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Timer;
