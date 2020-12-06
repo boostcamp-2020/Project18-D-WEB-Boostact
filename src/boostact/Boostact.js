@@ -41,7 +41,6 @@ const createElement = (type, props, ...children) => {
 
 const workLoop = (deadline) => {
   let isIdle = false;
-
   while (nextVNode && !isIdle) {
     nextVNode = makeVNode(nextVNode);
     isIdle = deadline.timeRemaining() < 1;
@@ -101,8 +100,11 @@ const appendVNode = (vNode, children) => {
 };
 
 const makeVNode = (vNode) => {
-  appendVNode(vNode, vNode.props && vNode.props.children);
+  if (typeof vNode.type === "function") {
+    vNode = vNode.type(vNode.props);
+  }
 
+  appendVNode(vNode, vNode.props && vNode.props.children);
   if (vNode.child) {
     return vNode.child;
   }
@@ -119,6 +121,11 @@ const makeVRoot = () => {
   if (typeof element.type === "function") {
     component = element.type(element.props);
   }
+
+  while (typeof component.type === "function") {
+    component = component.type(component.props);
+  }
+
   const temp = {
     type: component.type,
     dom: currentRoot && currentRoot.dom,
@@ -132,6 +139,7 @@ const makeVRoot = () => {
     child: currentRoot && currentRoot.child,
     effectTag: currentRoot && currentRoot.type === component.type ? "UPDATE" : "PLACEMENT",
   };
+
   return temp;
 };
 
