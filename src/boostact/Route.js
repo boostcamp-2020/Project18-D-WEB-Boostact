@@ -3,6 +3,10 @@ import Boostact from "./Boostact";
 
 /** @jsx Boostact.createElement */
 
+Router.prototype.duplicate = function (rule) {
+  return this.routes.some((route) => route.rule.toString() === this._parseRouteRule(rule).toString());
+};
+
 const Link = (props) => {
   const onclick = () => {
     window.router.navigateTo(props.to);
@@ -22,6 +26,7 @@ const Route = (props) => {
       Boostact.reRender();
     });
   }
+
   if (window.location.href === `${window.location.origin}${props.path}`) {
     props = {
       ...props,
