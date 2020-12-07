@@ -3,4 +3,4 @@ import App from "./App";
 /** @jsx Boostact.createElement */
 
 const container = document.getElementById("root");
-Boostact.render(<App/>, container);
+Boostact.render(<App />, container);

@@ -92,7 +92,6 @@ const TodoInsert = ({ onInsert }) => {
       <button
         onClick={onClick}
         style={{
-          width: "9%",
           height: "3rem",
           margin: "0px",
           padding: "0px",
