@@ -17,10 +17,13 @@ export const isNotHover = {
   color: "white",
 };
 
-export const onPage = {
-  position: "absolute",
-  background: "#61dafb",
-  width: "30px",
-  height: "3px",
-  top: "65px",
+export const onPage = (length) => {
+  const len = length * 18;
+  return {
+    position: "absolute",
+    background: "#61dafb",
+    width: String(len) + "px",
+    height: "3px",
+    top: "65px",
+  };
 };
