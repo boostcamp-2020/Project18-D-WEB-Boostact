@@ -52,7 +52,6 @@ const workLoop = (deadline) => {
     isIdle = deadline.timeRemaining() < 1;
   }
   if (!nextVNode && vRoot) {
-    debugger;
     reflectDOM(vRoot);
     currentRoot = vRoot;
     vRoot = undefined;
