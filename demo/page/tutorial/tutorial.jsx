@@ -1,14 +1,14 @@
 import Boostact from "../../../src/boostact/Boostact";
 /** @jsx Boostact.createElement */
 
-const Document = () => {
+const Tutorial = () => {
   return (
     <div>
       <div>
         <h1>Hello World</h1>
-        <h2>This is Document!</h2>
+        <h2>This is Tutorial!</h2>
       </div>
     </div>
   );
 };
-export default Document;
+export default Tutorial;

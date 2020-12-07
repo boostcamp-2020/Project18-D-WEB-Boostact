@@ -9,10 +9,10 @@ const Header = () => {
     <section id="header" style={container}>
       <div>로고</div>
       <div>
-        <Route.Link to="/home">
+        <Route.Link to="/document">
           <span>문서</span>
         </Route.Link>
-        <Route.Link to="/about">
+        <Route.Link to="/tutorial">
           <span>자습서</span>
         </Route.Link>
         <Route.Link to="/examples">

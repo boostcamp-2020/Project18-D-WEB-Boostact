@@ -5,13 +5,17 @@
 import Boostact from "../src/boostact/Boostact";
 import Route from "../src/boostact/Route";
 import Document from "./page/document/document";
+import Tutorial from "./page/tutorial/tutorial";
+import Example from "./page/example/example";
 
 /** @jsx Boostact.createElement */
 
 const MainRouter = () => {
   return (
     <div id="ROUTING">
-      <Route.Route path="/home" component={Document}></Route.Route>
+      <Route.Route path="/document" component={Document}></Route.Route>
+      <Route.Route path="/tutorial" component={Tutorial}></Route.Route>
+      <Route.Route path="/example" component={Example}></Route.Route>
     </div>
   );
 };

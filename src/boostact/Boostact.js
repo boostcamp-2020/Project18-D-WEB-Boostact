@@ -244,8 +244,6 @@ const placeNode = (currentNode) => {
   if (currentNode.alternate && currentNode.parent.effectTag !== "PLACEMENT") {
     parent.dom.replaceChild(RNode, currentNode.alternate.dom);
   } else {
-    console.log(RNode)
-    ;if()
     parent.dom.appendChild(RNode);
   }
 };
