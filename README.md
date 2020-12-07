@@ -1,4 +1,4 @@
-# Project18-D-WEB-BoostAct
+# Project18-D-WEB-Boostact
 
 # 팀원 소개
 
@@ -29,3 +29,6 @@
 > 무오류는 금이다.
 - mbti : INTP
 - 도전사항 : 자바스크립트 이해하기.
+
+# 기술 스택
+![JS](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbUbIMC%2FbtqOP4smgC8%2FFba1TSl7Wqkguz4szX8VO0%2Fimg.png)

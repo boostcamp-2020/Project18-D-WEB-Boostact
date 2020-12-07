@@ -1,4 +1,4 @@
-import Boostact from "../src/boostact/Boostact";
+import Boostact from "../../src/boostact/Boostact";
 /** @jsx Boostact.createElement */
 
 const numPad = (num) => {
@@ -8,30 +8,22 @@ const numPad = (num) => {
   return num;
 };
 
-const App = () => {
+const Timer = () => {
   const startTime = new Date();
 
-  let [hours, setHours] = Boostact.useState(startTime.getHours());
-  let [minutes, setMinutes] = Boostact.useState(startTime.getMinutes());
-  let [seconds, setSeconds] = Boostact.useState(startTime.getSeconds());
+  const [hours, setHours] = Boostact.useState(numPad(startTime.getHours()));
+  const [minutes, setMinutes] = Boostact.useState(numPad(startTime.getMinutes()));
+  const [seconds, setSeconds] = Boostact.useState(numPad(startTime.getSeconds()));
   let beforeOrAfter = "PM";
-
-  setTimeout(() => {
-    const timer = new Date();
-    setSeconds(numPad(timer.getSeconds()));
-    setMinutes(numPad(timer.getMinutes()));
-    setHours(numPad(timer.getHours()));
-  }, 1000);
-
-  const checkTimer = () => {
-    console.log("타이머가 시작됩니다.");
-    return () => {
-      console.log("타이머가 멈춰버렸습니다!?");
-    };
-  };
-
-  Boostact.useEffect(checkTimer, [seconds]);
-
+  Boostact.useEffect(() =>{
+    const intervalId = setInterval(() => {
+      const timer = new Date();
+      setSeconds(numPad(timer.getSeconds()));
+      setMinutes(numPad(timer.getMinutes()));
+      setHours(numPad(timer.getHours()));
+    },1000) 
+    return () => {clearInterval(intervalId)};
+  }, [seconds,minutes,hours])  
   return (
     <div>
       <div
@@ -114,4 +106,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default Timer;

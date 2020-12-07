@@ -1,13 +1,13 @@
 import Boostact from "../src/boostact/Boostact";
-import Route from "../src/boostact/Route";
-import Home from "./Home";
-import About from "./About";
-import Timer from "./Timer";
+import Route from "./Route";
+import Home from "./home/Home";
+import About from "./about/About";
+import Timer from "./timer/Timer";
 import Todo from "./todoList/todoTemplate";
 import Search from "./searchpage/main";
-/** @jsx Boostact.createElement */
 
-const RountingTest = () => {
+/** @jsx Boostact.createElement */
+const Router = () => {
   return (
     <div>
       <div id="title">타이틀</div>
@@ -45,10 +45,9 @@ const RountingTest = () => {
         <Route.Route path="/timer" component={Timer}></Route.Route>
         <Route.Route path="/todo" component={Todo}></Route.Route>
         <Route.Route path="/search" component={Search}></Route.Route>
-        <h1>여기가 기본 화면입니다.</h1>
       </div>
     </div>
   );
 };
 
-export default RountingTest;
+export default Router;
