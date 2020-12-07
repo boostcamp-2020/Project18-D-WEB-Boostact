@@ -16,7 +16,7 @@
 ​
 # Getting start
 ​
-### install
+## install
 ​
 Boostact 모듈을 사용하기 위해서는 webpack과 babel이 필수적으로 필요합니다. 따라서 아래의 devDependencies를 모두 추가해주시기 바랍니다.
 ​
@@ -107,7 +107,6 @@ module.exports = {
 ​
 ​
 ### index.html
-​
 ```html
 <!DOCTYPE html>
 <body>
@@ -120,7 +119,6 @@ module.exports = {
 ​
 ​
 ### index.js
-​
 ```javascript
 import Boostact from "boostact";
 import App from "./App";
@@ -131,7 +129,6 @@ Boostact.render(<App />, root);
 ```
 ​
 ### App.js
-​
 ```javascript
 import Boostact from "boostact";
 /** @jsx Boostact.createElement */
@@ -149,10 +146,9 @@ export default App;
 ​
 ```
 ​
-여기까지 하셨다면 당신도 Boostact를 사용할 수 있습니다. 주의할 점이 있다면, babel이 jsx를 React.createElement가 아닌 Boostact.createElement로 파싱을 하게끔, jsDoc을 추가해야 한다는 점입니다.
-​
+여기까지 하셨다면 당신도 Boostact를 사용할 수 있습니다. 주의할 점이 있다면, babel이 jsx를 React.createElement가 아닌 Boostact.createElement로 파싱을 하게끔, jsDoc을 추가해야 한다는 점입니다.  
+​  
 **jsdoc (essential)**
-​
 ```js
 /** @jsx Boostact.createElement/
 ```
