@@ -18,8 +18,8 @@ const Header = () => {
       </div>
       <div style={headerDiv}>
         <span style={contents}>v1.1.61</span>
-        <a href="https://github.com/boostcamp-2020/Project18-D-WEB-Boostact" style={{ textDecoration: "none" }}>
-          github
+        <a href="https://github.com/boostcamp-2020/Project18-D-WEB-Boostact" style={github}>
+          GitHub
         </a>
       </div>
     </section>

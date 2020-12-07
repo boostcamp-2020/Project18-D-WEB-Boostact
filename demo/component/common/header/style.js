@@ -19,4 +19,11 @@ export const contents = {
 
 export const github = {
   textDecoration: "none",
+  margin: 0,
+  padding: 0,
+  border: 0,
+  fontSize: "100%",
+  font: "inherit",
+  color: "white",
+  verticalAlign: "baseline",
 };
