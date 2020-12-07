@@ -1,51 +1,27 @@
 import Boostact from "../src/boostact/Boostact";
-import Route from "../src/boostact/Route";
-import Home from "./home/Home";
-import About from "./about/About";
-import Timer from "./timer/Timer";
-import Todo from "./todoList/todoTemplate";
-import Search from "./searchpage/main";
+import context from "./context";
+import Test from "./test";
 
 /** @jsx Boostact.createElement */
-const App= () => {
+
+const App = () => {
+  const contextValue = Boostact.useContext(context);
+
   return (
     <div>
-      <div id="title">타이틀</div>
-      <ul>
-        <li>
-          <Route.Link to="/home">
-            <span>Home</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/about">
-            <span>About</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/timer">
-            <span>Timer</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/todo">
-            <span>Todo</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/search">
-            <span>search</span>
-          </Route.Link>
-        </li>
-      </ul>
-      <hr />
-      <div id="ROUTING">
-        <Route.Route path="/home" component={Home}></Route.Route>
-        <Route.Route path="/about" component={About}></Route.Route>
-        <Route.Route path="/timer" component={Timer}></Route.Route>
-        <Route.Route path="/todo" component={Todo}></Route.Route>
-        <Route.Route path="/search" component={Search}></Route.Route>
-      </div>
+      <Test />
+      <context.Provider value={2}>
+        <div style={{ border: "1px solid black" }}>
+          <Test />
+          <Test />
+        </div>
+        <context.Provider value={3}>
+          <Test />
+          <Test />
+        </context.Provider>
+        <Test />
+        <Test />
+      </context.Provider>
     </div>
   );
 };

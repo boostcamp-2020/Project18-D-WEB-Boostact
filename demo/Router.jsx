@@ -1,5 +1,5 @@
 import Boostact from "../src/boostact/Boostact";
-import Route from "./Route";
+import Route from "../src/boostact/Route";
 import Home from "./home/Home";
 import About from "./about/About";
 import Timer from "./timer/Timer";
