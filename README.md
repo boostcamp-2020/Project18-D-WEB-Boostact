@@ -1,34 +1,158 @@
-# Project18-D-WEB-Boostact
-
-# 팀원 소개
-
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/99751cab-9e31-4b4c-8bc1-e956edf7adee/Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/99751cab-9e31-4b4c-8bc1-e956edf7adee/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20201117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20201117T133026Z&X-Amz-Expires=86400&X-Amz-Signature=b9b74ddd26a9dc31a33c68ab58328a633f9c5ae508a171527f7222114fbeb3e2&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
-- 2020.11.17 웃고있는 팀원들
-
-### J001 [강경수](https://github.com/kakasoo) 👨🏻‍💻
-> 가는 Request가 고와야 오는 Response가 곱다. :100: 
-- mbti : INTJ
-- 도전사항 : 예쁜 코드!
-- TMI : TMI는 뭘 쓰라고 있는 칸이죠?
-
-
-### J013 [구승효](https://github.com/SeunghyoKu) 👩🏻‍💻
-> 부캠 6개월이면 구승효도 코딩을 한다. :dog2: 
-- mbti : INFP
-- 도전사항 : 마지막을 불태우겠습니다. :fire: 
-- TMI : 이번 롤 시즌 결국 골딱이로 마감.. 
-
-
-### J107 [심재익](https://github.com/simjaeik) 😆
-> 코딩도 식후경 🍗
-- mbti: ENFP
-- 도전사항 : 현업개발자 앞에서도 당당하게 바닐라 js 잘한다고 말할수 있게 하기. 👊
-- TMI : 맥주 그라가스 🍻
-
-### J200  [지화영](https://github.com/ji3427) 😆
-> 무오류는 금이다.
-- mbti : INTP
-- 도전사항 : 자바스크립트 이해하기.
-
-# 기술 스택
-![JS](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbUbIMC%2FbtqOP4smgC8%2FFba1TSl7Wqkguz4szX8VO0%2Fimg.png)
+# Boostact
+​
+부스트액트는 순수 자바스크립트를 사용하여 만든 웹 프레임워크입니다.
+​
+리액트 공식 문서를 포함하여, 많은 곳에 리액트를 다루는 법에 관한 서술이 있습니다. 하지만 간단한 예제와 설명을 가지고는 리액트 내부 동작을 이해하기 어렵습니다. 우리는 이러한 것을 극복하기 위해 리액트를 재설계하는 경험을 시도했습니다.
+그리고 놀랍게도, 우리는 리액트와 유사하게 동작하는 Boostact를 만들었습니다!
+(의도치 않게도 여기에는 우리들만의 idea가 포함되어 있습니다. 실제 React의 동작을 따라할 수 없는 경우, 우리는 창의적인 방법으로 해결하고자 했습니다.)
+​
+우리의 코드는 React에 비하면 매우 작은 사이즈이며, 동시에 성능으로도 우수하다고 말할 수는 없습니다. 그렇지만 오히려 그 점으로 인해, 자바스크립트를 아는 개발자라면 누구나 이해할 수 있습니다.
+​
+우리는 Boostact를 사용하는 방법과 가상돔, 각각의 Hook들을 어떻게 구현했는지에 대해 자세히 설명할 것입니다.
+​
+아래를 읽어주시기 바랍니다.
+​
+​
+​
+# Getting start
+​
+### install
+​
+Boostact 모듈을 사용하기 위해서는 webpack과 babel이 필수적으로 필요합니다. 따라서 아래의 devDependencies를 모두 추가해주시기 바랍니다.
+​
+**프로젝트 생성**
+​
+```bash
+mkdir projectFolder
+npm init -y
+npm install boostact
+```
+​
+**바벨 설치**
+​
+```bash
+npm install @babel/cli @babel/core @babel/polyfill @babel/preset-env @babel/preset-react --save-dev
+```
+​
+**웹팩 설치**
+​
+```bash
+npm install webpack webpack-cli webpack-dev-server --save-dev
+npm install html-webpack-plugin mini-css-extract-plugin --save-dev
+```
+​
+이제 package.json에서 webpack 실행 명령어를 만들어주시면 됩니다!
+아래는 .babelrc file과 webpack.config.js file 입니다. 원하시는 내용에 따라 수정하셔도 좋습니다.
+​
+**.babelrc**
+​
+```bash
+{
+    "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
+​
+```
+​
+**webpack.config.js**
+​
+```bash
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+​
+module.exports = {
+    mode: "development",
+    entry: {
+        index: ["@babel/polyfill", "./index.js"],
+    },
+    output: {
+        path: path.join(__dirname, "dist"),
+        filename: "bundle.js",
+    },
+    module: {
+        rules: [
+            {
+                test: /\.(js|jsx)$/,
+                use: "babel-loader",
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    devServer: {
+        host: "127.0.0.1",
+        contentBase: path.join(__dirname, "/dist"),
+        compress: true,
+        hot: true,
+        inline: true,
+        port: 9000,
+        open: true,
+    },
+    resolve: {
+        extensions: [".js", ".jsx"],
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: "index",
+            hash: true,
+            chunks: ["index"],
+            filename: "index.html",
+            template: "./index.html",
+        }),
+    ],
+};
+​
+```
+​
+​
+​
+​
+​
+### index.html
+​
+```html
+<!DOCTYPE html>
+<body>
+    <div id="root"></div>
+</body>
+<script type="module" src="index.jsx"></script>
+​
+```
+​
+​
+​
+### index.js
+​
+```javascript
+import Boostact from "boostact";
+import App from "./App";
+/** @jsx Boostact.createElement */
+​
+const root = document.getElementById("root");
+Boostact.render(<App />, root);
+```
+​
+### App.js
+​
+```javascript
+import Boostact from "boostact";
+/** @jsx Boostact.createElement */
+​
+const App = () => {
+    return (
+        <div>
+            <h1>Hello!</h1>
+            <h2>This is Boostact!</h2>
+        </div>
+    );
+};
+​
+export default App;
+​
+```
+​
+여기까지 하셨다면 당신도 Boostact를 사용할 수 있습니다. 주의할 점이 있다면, babel이 jsx를 React.createElement가 아닌 Boostact.createElement로 파싱을 하게끔, jsDoc을 추가해야 한다는 점입니다.
+​
+**jsdoc (essential)**
+​
+```js
+/** @jsx Boostact.createElement/
+```
