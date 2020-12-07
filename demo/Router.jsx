@@ -15,7 +15,7 @@ const MainRouter = () => {
     <div id="ROUTING">
       <Route.Route path="/document" component={Document}></Route.Route>
       <Route.Route path="/tutorial" component={Tutorial}></Route.Route>
-      <Route.Route path="/example" component={Example}></Route.Route>
+      <Route.Route path="/examples" component={Example}></Route.Route>
     </div>
   );
 };
