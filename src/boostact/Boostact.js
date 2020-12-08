@@ -383,7 +383,9 @@ const useEffect = (fn, arr) => {
     beforeArr.some((el, i) => {
       if (el !== arr[i]) {
         HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
-        if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") HOOKS[CURRENT_HOOK_ID].cleanUp();
+        if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
+          HOOKS[CURRENT_HOOK_ID].cleanUp();
+        }
         HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
         if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
           throw new Error("useEffect must be return function.");
@@ -446,6 +448,12 @@ const useCallback = (func, arr) => {
 };
 
 const useContext = (context) => {
+  if (!context) {
+    throw new Error("Parameter is nothing. (ex. useContext(context))");
+  }
+  if (context.id === null || context.id === undefined) {
+    throw new Error("Maybe it's not context... Because it doesn't have context.\"id\"");
+  }
   return currentContext[context.id];
 };
 
