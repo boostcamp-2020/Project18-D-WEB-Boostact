@@ -8,13 +8,13 @@ import { isHover, isNotHover, container, onPage } from "./style";
 const Button = ({ href, name }) => {
   const isOnPage = href !== "/" && window.location.href.includes(href);
   const [clicked, setClicked] = Boostact.useState(isOnPage ? true : false);
-  const [hover, setHover] = Boostact.useState(isOnPage ? isHover : isNotHover);
+  const [style, setStyle] = Boostact.useState(isOnPage ? isHover : isNotHover);
 
   const hoverIn = () => {
-    setHover(isHover);
+    setStyle(isHover);
   };
   const hoverOut = () => {
-    if (!clicked) setHover(isNotHover);
+    if (!clicked) setStyle(isNotHover);
   };
 
   if (href !== "/" && window.location.href.includes(href)) {
@@ -24,7 +24,7 @@ const Button = ({ href, name }) => {
   return (
     <div>
       <Route.Link to={href} style={container}>
-        <span onMouseOver={hoverIn} onMouseOut={hoverOut} style={hover}>
+        <span onMouseOver={hoverIn} onMouseOut={hoverOut} style={style}>
           {name}
           {clicked ? <span style={onPage(name.length)}></span> : undefined}
         </span>
