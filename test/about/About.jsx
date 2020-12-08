@@ -1,5 +1,5 @@
 import Boostact from "../../src/boostact/Boostact";
-import Router from "../App";
+import Router from "../../demo/App";
 /** @jsx Boostact.createElement */
 
 const About = (props) => {
