@@ -8,6 +8,8 @@ let nextVNode = null;
 let element;
 let component;
 let container;
+const defaultContext = [];
+let currentContext;
 
 const deletionQueue = [];
 const FIRST_CHILD = 0;
@@ -15,6 +17,8 @@ const INIT_VALUE = 0;
 
 const HOOKS = [];
 let HOOK_ID = 0;
+const CONTEXTS = [];
+let CONTEXT_ID = 0;
 
 const initHook = () => {
   HOOKS.forEach((hook, index) => {
@@ -23,6 +27,7 @@ const initHook = () => {
     }
   });
   HOOKS.length = HOOK_ID;
+  currentContext = defaultContext;
   return HOOKS;
 };
 
@@ -73,7 +78,11 @@ const appendVNode = (vNode, children) => {
     let vChild = null;
     if (children && children[index] !== undefined) {
       vChild = { ...children[index] };
-
+      if (children[index].context) {
+        currentContext = children[index].context;
+      } else {
+        currentContext = vNode.context;
+      }
       if (typeof vChild.type === "function") {
         vChild = vChild.type(vChild.props);
 
@@ -83,6 +92,7 @@ const appendVNode = (vNode, children) => {
           continue;
         }
       }
+      vChild.context = currentContext;
     }
 
     if (vChild) {
@@ -145,6 +155,7 @@ const makeVRoot = () => {
     },
     child: currentRoot && currentRoot.child,
     effectTag: currentRoot && currentRoot.type === component.type ? "UPDATE" : "PLACEMENT",
+    context: [...defaultContext],
   };
 
   return temp;
@@ -204,6 +215,7 @@ const determineState = (curChild, vChild) => {
 };
 
 const render = (el, root) => {
+  debugger;
   element = el;
   container = root;
   vRoot = makeVRoot();
@@ -412,21 +424,27 @@ const useMemo = (func, arr) => {
 };
 
 const useContext = (context) => {
-  return context.value[context.value.length - 1];
+  return currentContext[context.id];
 };
 
 const createContext = (defaultValue) => {
-  const CURRENT_HOOK_ID = HOOK_ID++;
+  const CURRENT_CONTEXT_ID = CONTEXT_ID++;
+  defaultContext[CURRENT_CONTEXT_ID] = defaultValue;
+  currentContext = defaultContext;
   const useContextHook = {
-    value: [defaultValue],
+    id: CURRENT_CONTEXT_ID,
     Provider: (props) => {
-      HOOKS[CURRENT_HOOK_ID].value.push(props.value);
-      return { type: "CONTEXT", props: { children: props.children }, hook: HOOKS[CURRENT_HOOK_ID] };
+      const newContext = [...currentContext];
+      newContext[CURRENT_CONTEXT_ID] = props.value;
+      props.children.forEach((child) => {
+        child.context = newContext;
+      });
+      return { type: "CONTEXT", props: { children: props.children } };
     },
   };
 
-  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || useContextHook;
-  return HOOKS[CURRENT_HOOK_ID];
+  CONTEXTS[CURRENT_CONTEXT_ID] = CONTEXTS[CURRENT_CONTEXT_ID] || useContextHook;
+  return CONTEXTS[CURRENT_CONTEXT_ID];
 };
 
 export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender, useMemo };
