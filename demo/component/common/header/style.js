@@ -3,7 +3,7 @@ export const container = {
   display: "flex",
   justifyContent: "space-between",
   height: "60px",
-  padding: "5px 80px",
+  padding: "0px 80px",
   fontSize: "18px",
   color: "white",
 };
@@ -11,6 +11,7 @@ export const container = {
 export const headerDiv = {
   alignItems: "center",
   display: "flex",
+  font: "16px",
 };
 
 export const contents = {
