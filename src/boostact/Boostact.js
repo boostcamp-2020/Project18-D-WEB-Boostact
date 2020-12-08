@@ -213,7 +213,6 @@ const determineState = (curChild, vChild) => {
 };
 
 const render = (el, root) => {
-  debugger;
   element = el;
   container = root;
   vRoot = makeVRoot();
