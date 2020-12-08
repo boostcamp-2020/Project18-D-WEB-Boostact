@@ -157,7 +157,7 @@ const makeVRoot = () => {
       dom: container,
     },
     child: currentRoot && currentRoot.child,
-    effectTag: currentRoot && currentRoot.type === component.type ? "UPDATE" : "PLACEMENT",
+    effectTag: currentRoot && currentRoot.type === component.type ? (isUnchanged(currentRoot, component) ? "NONE" : "UPDATE") : "PLACEMENT",
     context: [...defaultContext],
   };
 
