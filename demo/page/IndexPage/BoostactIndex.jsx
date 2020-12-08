@@ -9,7 +9,7 @@ const BoostactIndex = () => {
   return (
     <div style={{ minWidth: "100%" }}>
       <Banner />
-      <div id="contents" style={{ minWidth: "80%", marginLeft: "10%", marginRight: "10%" }}>
+      <div id="contents" style={{ minWidth: "70%", marginLeft: "15%", marginRight: "15%" }}>
         <Gist />
         <hr style={{ marginTop: "90px", marginBottom: "90px" }} />
         <SimpleContents />
