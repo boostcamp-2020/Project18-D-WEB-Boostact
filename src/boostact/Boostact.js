@@ -363,6 +363,14 @@ const useReducer = (reducer, initialState) => {
 };
 
 const useEffect = (fn, arr) => {
+  if (!fn) {
+    throw new Error("Note : did you forget parameters?");
+  }
+
+  if (!arr) {
+    throw new Error("If you don't want to observe any variable, you have to put an empty array.");
+  }
+
   const CURRENT_HOOK_ID = HOOK_ID++;
   const useEffectHook = {
     cleanUp: null,
@@ -378,7 +386,7 @@ const useEffect = (fn, arr) => {
         if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") HOOKS[CURRENT_HOOK_ID].cleanUp();
         HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
         if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
-          throw new Error("useEffect must be return function");
+          throw new Error("useEffect must be return function.");
         }
         HOOKS[CURRENT_HOOK_ID].work = fn;
         return true;
@@ -392,10 +400,12 @@ const useEffect = (fn, arr) => {
     }
     HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
     if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
-      throw new Error("useEffect must be return function");
+      throw new Error("useEffect must be return function.");
     }
   } else if (!HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
-    if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") HOOKS[CURRENT_HOOK_ID].cleanUp();
+    if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
+      HOOKS[CURRENT_HOOK_ID].cleanUp();
+    }
     HOOKS[CURRENT_HOOK_ID].work = () => {};
   }
 };
