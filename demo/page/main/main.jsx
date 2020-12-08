@@ -7,16 +7,16 @@ import MainRouter from "../../router";
 
 const Main = () => {
   return (
-    <section id="header">
+    <div>
       <Header />
-      <section id="body">
+      <div id="body">
         <div id="ROUTING">
           <MainRouter />
         </div>
         {/* <Navigator /> */}
-      </section>
+      </div>
       <Footer />
-    </section>
+    </div>
   );
 };
 export default Main;

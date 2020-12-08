@@ -1,12 +1,12 @@
 import Boostact from "../../../src/boostact/Boostact";
+import Navigator from "../../component/common/navigatorDocument/navigator";
 /** @jsx Boostact.createElement */
 
 const Document = () => {
   return (
     <div>
       <div>
-        <h1>Hello World</h1>
-        <h2>This is Document!</h2>
+        <Navigator />
       </div>
     </div>
   );
