@@ -1,25 +1,27 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
-import { container } from "./style";
+import { container, contents, headerDiv, github } from "./style";
+import Button from "../button/button";
 
 /** @jsx Boostact.createElement */
 
 const Header = () => {
   return (
     <section id="header" style={container}>
-      <div>로고</div>
-      <div>
-        <Route.Link to="/document">
-          <span>문서</span>
-        </Route.Link>
-        <Route.Link to="/tutorial">
-          <span>자습서</span>
-        </Route.Link>
-        <Route.Link to="/examples">
-          <span>예제</span>
-        </Route.Link>
+      <div style={headerDiv}>
+        <Button href="/" name="Boostact"></Button>
       </div>
-      <a href="https://github.com/boostcamp-2020/Project18-D-WEB-Boostact">github</a>
+      <div style={headerDiv}>
+        <Button href="/document" name="문서" />
+        <Button href="/tutorial" name="자습서" />
+        <Button href="/examples" name="예제" />
+      </div>
+      <div style={headerDiv}>
+        <span style={contents}>v1.1.61</span>
+        <a href="https://github.com/boostcamp-2020/Project18-D-WEB-Boostact" style={github}>
+          GitHub
+        </a>
+      </div>
     </section>
   );
 };
