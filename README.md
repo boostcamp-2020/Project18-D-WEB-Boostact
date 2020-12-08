@@ -2,7 +2,7 @@
 - [document](https://boostact.github.io/)
 - [npm adress](https://www.npmjs.com/package/boostact)
   
-## WHAT
+# WHAT
 ​
 **부스트액트**는 **순수 자바스크립트**를 사용하여 만든 웹 프레임워크입니다.  
 ​
