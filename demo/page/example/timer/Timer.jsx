@@ -15,14 +15,15 @@ const Timer = () => {
   const [minutes, setMinutes] = Boostact.useState(numPad(startTime.getMinutes()));
   const [seconds, setSeconds] = Boostact.useState(numPad(startTime.getSeconds()));
   let beforeOrAfter = "PM";
-
-  /*setTimeout(() => {
-    const timer = new Date();
-    setSeconds(numPad(timer.getSeconds()));
-    setMinutes(numPad(timer.getMinutes()));
-    setHours(numPad(timer.getHours()));
-  },1000) */
-
+  Boostact.useEffect(() =>{
+    const intervalId = setInterval(() => {
+      const timer = new Date();
+      setSeconds(numPad(timer.getSeconds()));
+      setMinutes(numPad(timer.getMinutes()));
+      setHours(numPad(timer.getHours()));
+    },1000) 
+    return () => {clearInterval(intervalId)};
+  }, [seconds,minutes,hours])  
   return (
     <div>
       <div

@@ -1,53 +1,23 @@
+// import Boostact from "../src/boostact/Boostact";
+// import Route from "../src/boostact/Route";
+// import Document from "./page/document/document";
+
 import Boostact from "../src/boostact/Boostact";
 import Route from "../src/boostact/Route";
-import Home from "./home/Home";
-import About from "./about/About";
-import Timer from "./timer/Timer";
-import Todo from "./todoList/todoTemplate";
-import Search from "./searchpage/main";
+import Document from "./page/document/document";
+import Tutorial from "./page/tutorial/tutorial";
+import Example from "./page/example/example";
 
 /** @jsx Boostact.createElement */
-const Router = () => {
+
+const MainRouter = () => {
   return (
-    <div>
-      <div id="title">타이틀</div>
-      <ul>
-        <li>
-          <Route.Link to="/home">
-            <span>Home</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/about">
-            <span>About</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/Timer">
-            <span>Timer</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/todo">
-            <span>Todo</span>
-          </Route.Link>
-        </li>
-        <li>
-          <Route.Link to="/search">
-            <span>search</span>
-          </Route.Link>
-        </li>
-      </ul>
-      <hr />
-      <div id="ROUTING">
-        <Route.Route path="/home" component={Home}></Route.Route>
-        <Route.Route path="/about" component={About}></Route.Route>
-        <Route.Route path="/timer" component={Timer}></Route.Route>
-        <Route.Route path="/todo" component={Todo}></Route.Route>
-        <Route.Route path="/search" component={Search}></Route.Route>
-      </div>
+    <div id="ROUTING">
+      <Route.Route path="/document" component={Document}></Route.Route>
+      <Route.Route path="/tutorial" component={Tutorial}></Route.Route>
+      <Route.Route path="/examples" component={Example}></Route.Route>
     </div>
   );
 };
 
-export default Router;
+export default MainRouter;

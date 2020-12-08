@@ -15,6 +15,11 @@ const HOOKS = [];
 let HOOK_ID = 0;
 
 const initHook = () => {
+  HOOKS.forEach((hook, index) => {
+    if (index >= HOOK_ID && hook && hook.cleanUp) {
+      hook.cleanUp();
+    }
+  });
   HOOKS.length = HOOK_ID;
   return HOOKS;
 };
@@ -345,6 +350,7 @@ const useEffect = (fn, arr) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
   const useEffectHook = {
     cleanUp: null,
+    work: null,
     beforeArr: [],
   };
 
@@ -353,20 +359,28 @@ const useEffect = (fn, arr) => {
     beforeArr.some((el, i) => {
       if (el !== arr[i]) {
         HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
-        HOOKS[CURRENT_HOOK_ID].cleanUp();
-        HOOKS[CURRENT_HOOK_ID].cleanUp = fn;
+        if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") HOOKS[CURRENT_HOOK_ID].cleanUp();
+        HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
+        if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
+          throw new Error("useEffect must be return function");
+        }
+        HOOKS[CURRENT_HOOK_ID].work = fn;
         return true;
       }
     });
   } else if (!HOOKS[CURRENT_HOOK_ID]) {
     HOOKS[CURRENT_HOOK_ID] = useEffectHook;
-    HOOKS[CURRENT_HOOK_ID].cleanUp = fn;
+    HOOKS[CURRENT_HOOK_ID].work = fn;
     if (arr.length) {
       HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
     }
+    HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
+    if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
+      throw new Error("useEffect must be return function");
+    }
   } else if (!HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
-    HOOKS[CURRENT_HOOK_ID].cleanUp();
-    HOOKS[CURRENT_HOOK_ID].cleanUp = () => {};
+    if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") HOOKS[CURRENT_HOOK_ID].cleanUp();
+    HOOKS[CURRENT_HOOK_ID].work = () => {};
   }
 };
 

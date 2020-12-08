@@ -1,29 +1,21 @@
 import Boostact from "../src/boostact/Boostact";
-import context from "./context";
-import Test from "./test";
-
+import Header from "./component/common/header/header";
+import Footer from "./component/common/footer/footer";
+import Router from "./router";
 /** @jsx Boostact.createElement */
 
-const App = () => {
-  const contextValue = Boostact.useContext(context);
-
+const Main = () => {
   return (
     <div>
-      <Test />
-      <context.Provider value={2}>
-        <div style={{ border: "1px solid black" }}>
-          <Test />
-          <Test />
-        </div>
-        <context.Provider value={3}>
-          <Test />
-          <Test />
-        </context.Provider>
-        <Test />
-        <Test />
-      </context.Provider>
+      <section id="header">
+        <Header />
+        <section id="body">
+          <Router />
+          {/* <Navigator /> */}
+        </section>
+        <Footer />
+      </section>
     </div>
   );
 };
-
-export default App;
+export default Main;
