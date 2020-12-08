@@ -4,9 +4,7 @@ import "@fortawesome/fontawesome-free/js/all";
 import { style } from "./style";
 /** @jsx Boostact.createElement */
 
-const Docs = ({ lists, title }) => {
-  const [clicked, setClicked] = Boostact.useState(false);
-  // const [hovered, setHovered] = Boostact.useState(false);
+const Docs = ({ onClick, opened, lists, title }) => {
   const contents = lists.map(({ name, link }) => {
     return (
       <li>
@@ -15,7 +13,7 @@ const Docs = ({ lists, title }) => {
             style={style.li}
             onMouseOver={(e) => (e.target.style.color = "#6d6d6d")}
             onMouseOut={(e) => (e.target.style.color = "black")}
-            style={clicked ? { fontWeight: "bold" } : { color: "red" }}
+            style={opened ? { fontWeight: "bold" } : { color: "red" }}
           >
             {name}
           </span>
@@ -24,21 +22,13 @@ const Docs = ({ lists, title }) => {
     );
   });
 
-  const toggleContents = () => {
-    setClicked(!clicked);
-  };
-
-  // const hoverContents = () => {
-  //   setHovered(!hovered);
-  // };
-
   return (
     <div>
-      <button onClick={toggleContents} style={clicked ? style.buttonClicked : style.buttonNotClicked}>
+      <button onClick={onClick} style={opened ? style.buttonClicked : style.buttonNotClicked}>
         {title}
-        <i className="fas fa-chevron-down" style={clicked ? style.iconClicked : style.iconNotClicked}></i>
+        <i className="fas fa-chevron-down" style={opened ? style.iconClicked : style.iconNotClicked}></i>
       </button>
-      <ol style={clicked ? style.isClicked : style.isNotClicked}>{contents}</ol>
+      <ol style={opened ? style.isClicked : style.isNotClicked}>{contents}</ol>
     </div>
   );
 };
