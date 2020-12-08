@@ -32,6 +32,9 @@ const initHook = () => {
 };
 
 const createTextElement = (text) => {
+  if (!text) {
+    throw new Error("TextElement's nodeValue must not be null or undefined!");
+  }
   return {
     type: "TEXT_NODE",
     props: { nodeValue: text },
