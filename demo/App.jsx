@@ -1,7 +1,7 @@
 import Boostact from "../src/boostact/Boostact";
 import Header from "./component/common/header/header";
 import Footer from "./component/common/footer/footer";
-import Router from "./router";
+import Router from "./Router";
 /** @jsx Boostact.createElement */
 
 const Main = () => {

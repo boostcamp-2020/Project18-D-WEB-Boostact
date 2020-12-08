@@ -1,5 +1,4 @@
 import Boostact from "../src/boostact/Boostact";
-import UseRef from "./UseRef";
 import App from "./App";
 /** @jsx Boostact.createElement */
 
