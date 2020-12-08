@@ -398,7 +398,7 @@ const useEffect = (fn, arr) => {
 };
 
 const useMemo = (func, arr) => {
-  if (!arr) {
+  if (!arr || !func) {
     throw new Error("useMemo Hook must have two parameter... (example. useMemo(func, array)");
   }
 
@@ -426,6 +426,9 @@ const useMemo = (func, arr) => {
 };
 
 const useCallback = (func, arr) => {
+  if (!arr || !func) {
+    throw new Error("useCallback Hook must have two parameter... (example. useCallback(func, array)");
+  }
   return useMemo(() => func, arr);
 };
 
