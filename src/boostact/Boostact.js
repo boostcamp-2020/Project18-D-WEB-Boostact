@@ -1,5 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 
+import { createRef } from "preact";
+
 let vRoot = null;
 let currentRoot = null;
 let nextVNode = null;
@@ -384,6 +386,31 @@ const useEffect = (fn, arr) => {
   }
 };
 
+const useMemo = (func, arr) => {
+  if (!arr) {
+    throw new Error("useMemo Hook must have two parameter... (example. useMemo(func, array)");
+  }
+
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || { beforeArr: arr };
+  if (HOOKS[CURRENT_HOOK_ID].beforeArr.length !== arr.length) {
+    HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
+    return func();
+  }
+
+  const result = HOOKS[CURRENT_HOOK_ID].beforeArr.some((el, i) => {
+    if (el !== arr[i]) {
+      HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
+      console.log(func);
+      console.log(func());
+      return true;
+    }
+  });
+  if (result) {
+    return func();
+  }
+};
+
 const useContext = (context) => {
   return context.value[context.value.length - 1];
 };
@@ -402,4 +429,4 @@ const createContext = (defaultValue) => {
   return HOOKS[CURRENT_HOOK_ID];
 };
 
-export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender };
+export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender, useMemo };
