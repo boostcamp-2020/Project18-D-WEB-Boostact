@@ -23,7 +23,8 @@
 ## install
 ​
 Boostact 모듈을 사용하기 위해서는 webpack과 babel이 필수적으로 필요합니다. 따라서 아래의 devDependencies를 모두 추가해주시기 바랍니다.
-​
+​  
+  
 **프로젝트 생성**
 ​
 ```bash
