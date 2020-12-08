@@ -26,7 +26,7 @@ const Button = ({ href, name }) => {
       <Route.Link to={href} style={container}>
         <span onMouseOver={hoverIn} onMouseOut={hoverOut} style={style}>
           {name}
-          {clicked ? <span style={onPage(name.length)}></span> : undefined}
+          {clicked ? <span style={onPage(name.length)}></span> : <span />}
         </span>
       </Route.Link>
     </div>

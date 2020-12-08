@@ -1,4 +1,4 @@
-import Boostact from "../../src/boostact/Boostact";
+import Boostact from "../../../../src/boostact/Boostact";
 import "@fortawesome/fontawesome-free/js/all";
 /** @jsx Boostact.createElement */
 

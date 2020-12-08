@@ -1,4 +1,7 @@
+// aws key
 /* eslint-disable no-restricted-syntax */
+
+import { createRef } from "preact";
 
 let vRoot = null;
 let currentRoot = null;
@@ -152,7 +155,7 @@ const makeVRoot = () => {
       dom: container,
     },
     child: currentRoot && currentRoot.child,
-    effectTag: currentRoot && currentRoot.type === component.type ? "UPDATE" : "PLACEMENT",
+    effectTag: currentRoot && currentRoot.type === component.type ? (isUnchanged(currentRoot, component) ? "NONE" : "UPDATE") : "PLACEMENT",
     context: [...defaultContext],
   };
 
@@ -358,6 +361,14 @@ const useReducer = (reducer, initialState) => {
 };
 
 const useEffect = (fn, arr) => {
+  if (!fn) {
+    throw new Error("Note : did you forget parameters?");
+  }
+
+  if (!arr) {
+    throw new Error("If you don't want to observe any variable, you have to put an empty array.");
+  }
+
   const CURRENT_HOOK_ID = HOOK_ID++;
   const useEffectHook = {
     cleanUp: null,
@@ -370,10 +381,12 @@ const useEffect = (fn, arr) => {
     beforeArr.some((el, i) => {
       if (el !== arr[i]) {
         HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
-        if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") HOOKS[CURRENT_HOOK_ID].cleanUp();
+        if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
+          HOOKS[CURRENT_HOOK_ID].cleanUp();
+        }
         HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
         if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
-          throw new Error("useEffect must be return function");
+          throw new Error("useEffect must be return function.");
         }
         HOOKS[CURRENT_HOOK_ID].work = fn;
         return true;
@@ -387,15 +400,60 @@ const useEffect = (fn, arr) => {
     }
     HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
     if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
-      throw new Error("useEffect must be return function");
+      throw new Error("useEffect must be return function.");
     }
   } else if (!HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
-    if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") HOOKS[CURRENT_HOOK_ID].cleanUp();
+    if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
+      HOOKS[CURRENT_HOOK_ID].cleanUp();
+    }
     HOOKS[CURRENT_HOOK_ID].work = () => {};
   }
 };
 
+const useMemo = (func, arr) => {
+  if (!arr || !func) {
+    throw new Error("useMemo Hook must have two parameter... (example. useMemo(func, array)");
+  }
+
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  if (!HOOKS[CURRENT_HOOK_ID]) {
+    HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
+    return HOOKS[CURRENT_HOOK_ID].value;
+  }
+
+  if (HOOKS[CURRENT_HOOK_ID].beforeArr.length !== arr.length) {
+    HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
+    return HOOKS[CURRENT_HOOK_ID].value;
+  }
+
+  const result = HOOKS[CURRENT_HOOK_ID].beforeArr.some((el, i) => {
+    if (el !== arr[i]) {
+      HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
+      return true;
+    }
+  });
+
+  if (!result) {
+    return HOOKS[CURRENT_HOOK_ID].value;
+  } else {
+    return func();
+  }
+};
+
+const useCallback = (func, arr) => {
+  if (!arr || !func) {
+    throw new Error("useCallback Hook must have two parameter... (example. useCallback(func, array)");
+  }
+  return useMemo(() => func, arr);
+};
+
 const useContext = (context) => {
+  if (!context) {
+    throw new Error("Parameter is nothing. (ex. useContext(context))");
+  }
+  if (context.id === null || context.id === undefined) {
+    throw new Error("Maybe it's not context... Because it doesn't have context.\"id\"");
+  }
   return currentContext[context.id];
 };
 
@@ -419,4 +477,4 @@ const createContext = (defaultValue) => {
   return CONTEXTS[CURRENT_CONTEXT_ID];
 };
 
-export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender };
+export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender, useMemo, useCallback };
