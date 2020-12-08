@@ -1,4 +1,4 @@
-import Boostact from "../../src/boostact/Boostact";
+import Boostact from "../../../../src/boostact/Boostact";
 /** @jsx Boostact.createElement */
 
 const numPad = (num) => {
@@ -15,15 +15,17 @@ const Timer = () => {
   const [minutes, setMinutes] = Boostact.useState(numPad(startTime.getMinutes()));
   const [seconds, setSeconds] = Boostact.useState(numPad(startTime.getSeconds()));
   let beforeOrAfter = "PM";
-  Boostact.useEffect(() =>{
+  Boostact.useEffect(() => {
     const intervalId = setInterval(() => {
       const timer = new Date();
       setSeconds(numPad(timer.getSeconds()));
       setMinutes(numPad(timer.getMinutes()));
       setHours(numPad(timer.getHours()));
-    },1000) 
-    return () => {clearInterval(intervalId)};
-  }, [seconds,minutes,hours])  
+    }, 1000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [seconds, minutes, hours]);
   return (
     <div>
       <div

@@ -1,4 +1,4 @@
-import Boostact from "../../src/boostact/Boostact";
+import Boostact from "../../../src/boostact/Boostact";
 
 /** @jsx Boostact.createElement */
 

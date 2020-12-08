@@ -1,4 +1,4 @@
-import Boostact from "../../src/boostact/Boostact";
+import Boostact from "../../../src/boostact/Boostact";
 import Banner from "./Banner";
 import Gist from "./Gist";
 import SimpleContents from "./SimpleContents";
