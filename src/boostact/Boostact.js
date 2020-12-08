@@ -32,7 +32,7 @@ const initHook = () => {
 };
 
 const createTextElement = (text) => {
-  if (!text) {
+  if (text === undefined || text === null) {
     throw new Error("TextElement's nodeValue must not be null or undefined!");
   }
   return {
