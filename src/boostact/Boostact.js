@@ -226,7 +226,11 @@ const render = (el, root) => {
 
 const reRender = () => {
   if (!nextVNode) {
+    HOOK_ID = 0;
     vRoot = makeVRoot();
+    if(nextVNode){
+      vRoot = nextVNode;
+    }
     nextVNode = vRoot;
   }
 };
@@ -386,11 +390,11 @@ const useEffect = (fn, arr) => {
         if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
           HOOKS[CURRENT_HOOK_ID].cleanUp();
         }
+
         HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
         if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
           throw new Error("useEffect must be return function.");
         }
-        HOOKS[CURRENT_HOOK_ID].work = fn;
         return true;
       }
     });
@@ -405,10 +409,14 @@ const useEffect = (fn, arr) => {
       throw new Error("useEffect must be return function.");
     }
   } else if (!HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
-    if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
-      HOOKS[CURRENT_HOOK_ID].cleanUp();
+   if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
+     HOOKS[CURRENT_HOOK_ID].cleanUp();
+   }
+    HOOKS[CURRENT_HOOK_ID].work = fn;
+    HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
+    if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
+      throw new Error("useEffect must be return function");
     }
-    HOOKS[CURRENT_HOOK_ID].work = () => {};
   }
 };
 
