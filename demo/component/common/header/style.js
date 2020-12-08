@@ -6,16 +6,15 @@ export const container = {
   padding: "0px 80px",
   fontSize: "18px",
   color: "white",
+  minWidth: "70%",
+  paddingLeft: `calc(15% - 20px)`,
+  paddingRight: "15%",
 };
 
 export const headerDiv = {
   alignItems: "center",
   display: "flex",
   font: "16px",
-};
-
-export const contents = {
-  padding: "0px 20px",
 };
 
 export const github = {
