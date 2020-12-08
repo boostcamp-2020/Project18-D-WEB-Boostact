@@ -1,5 +1,5 @@
-import Boostact from "../../src/boostact/Boostact";
-import Timer from "../timer/Timer";
+import Boostact from "../../../src/boostact/Boostact";
+import Timer from "../example/timer/Timer";
 
 /** @jsx Boostact.createElement */
 
