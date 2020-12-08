@@ -1,4 +1,5 @@
 export const container = {
+  position: "fixed",
   background: "#20232a",
   display: "flex",
   justifyContent: "space-between",
