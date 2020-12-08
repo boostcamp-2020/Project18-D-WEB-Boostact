@@ -215,7 +215,6 @@ const determineState = (curChild, vChild) => {
 };
 
 const render = (el, root) => {
-  debugger;
   element = el;
   container = root;
   vRoot = makeVRoot();
@@ -404,6 +403,11 @@ const useMemo = (func, arr) => {
   }
 
   const CURRENT_HOOK_ID = HOOK_ID++;
+  if (!HOOKS[CURRENT_HOOK_ID]) {
+    HOOKS[CURRENT_HOOK_ID] = { beforeArr: arr };
+    return func();
+  }
+
   HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || { beforeArr: arr };
   if (HOOKS[CURRENT_HOOK_ID].beforeArr.length !== arr.length) {
     HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
@@ -413,14 +417,16 @@ const useMemo = (func, arr) => {
   const result = HOOKS[CURRENT_HOOK_ID].beforeArr.some((el, i) => {
     if (el !== arr[i]) {
       HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
-      console.log(func);
-      console.log(func());
       return true;
     }
   });
   if (result) {
     return func();
   }
+};
+
+const useCallback = (func, arr) => {
+  return useMemo(() => func, arr);
 };
 
 const useContext = (context) => {
@@ -447,4 +453,4 @@ const createContext = (defaultValue) => {
   return CONTEXTS[CURRENT_CONTEXT_ID];
 };
 
-export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender, useMemo };
+export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender, useMemo, useCallback };
