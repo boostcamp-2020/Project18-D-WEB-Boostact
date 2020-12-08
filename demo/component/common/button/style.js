@@ -24,6 +24,6 @@ export const onPage = (length) => {
     background: "#61dafb",
     width: String(len) + "px",
     height: "3px",
-    top: "65px",
+    top: "57px",
   };
 };

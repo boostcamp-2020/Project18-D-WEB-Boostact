@@ -1,3 +1,4 @@
+// aws key
 /* eslint-disable no-restricted-syntax */
 
 import { createRef } from "preact";
@@ -32,9 +33,6 @@ const initHook = () => {
 };
 
 const createTextElement = (text) => {
-  if (text === undefined || text === null) {
-    throw new Error("TextElement's nodeValue must not be null or undefined!");
-  }
   return {
     type: "TEXT_NODE",
     props: { nodeValue: text },
@@ -427,23 +425,25 @@ const useMemo = (func, arr) => {
 
   const CURRENT_HOOK_ID = HOOK_ID++;
   if (!HOOKS[CURRENT_HOOK_ID]) {
-    HOOKS[CURRENT_HOOK_ID] = { beforeArr: arr };
-    return func();
+    HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
+    return HOOKS[CURRENT_HOOK_ID].value;
   }
 
-  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || { beforeArr: arr };
   if (HOOKS[CURRENT_HOOK_ID].beforeArr.length !== arr.length) {
-    HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
-    return func();
+    HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
+    return HOOKS[CURRENT_HOOK_ID].value;
   }
 
   const result = HOOKS[CURRENT_HOOK_ID].beforeArr.some((el, i) => {
     if (el !== arr[i]) {
-      HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
+      HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
       return true;
     }
   });
-  if (result) {
+
+  if (!result) {
+    return HOOKS[CURRENT_HOOK_ID].value;
+  } else {
     return func();
   }
 };
