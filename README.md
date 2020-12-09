@@ -12,7 +12,8 @@ Please read below.
 
 ## install
 
-To use the Boostact module, webpack and babel are essential. Therefore, please add all of the devDependencies below.  
+To use the Boostact module, webpack and babel are essential. Therefore, please add all of the devDependencies below.
+
 **Create project**
 
 ```
