@@ -12,7 +12,12 @@ const Docs = ({ lists, title }) => {
     return (
       <li onClick={switchBold}>
         <Route.Link to={link}>
-          <span style={style.li} onMouseOver={(e) => (e.target.style.color = "#6d6d6d")} onMouseOut={(e) => (e.target.style.color = "black")}>
+          <span
+            style={style.li}
+            onMouseOver={(e) => (e.target.style.color = "#6d6d6d")}
+            onMouseOut={(e) => (e.target.style.color = "black")}
+            style={opened ? { fontWeight: "bold" } : { color: "red" }}
+          >
             {name}
           </span>
         </Route.Link>
@@ -34,11 +39,11 @@ const Docs = ({ lists, title }) => {
 
   return (
     <div>
-      <button onClick={toggleContents} style={clicked ? style.buttonClicked : style.buttonNotClicked}>
+      <button onClick={onClick} style={opened ? style.buttonClicked : style.buttonNotClicked}>
         {title}
-        <i className="fas fa-chevron-down" style={clicked ? style.iconClicked : style.iconNotClicked}></i>
+        <i className="fas fa-chevron-down" style={opened ? style.iconClicked : style.iconNotClicked}></i>
       </button>
-      <ol style={clicked ? style.isClicked : style.isNotClicked}>{contents}</ol>
+      <ol style={opened ? style.isClicked : style.isNotClicked}>{contents}</ol>
     </div>
   );
 };
