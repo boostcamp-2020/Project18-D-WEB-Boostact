@@ -1,13 +1,10 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
-import List from "./list";
 import "@fortawesome/fontawesome-free/js/all";
 import { style } from "./style";
 /** @jsx Boostact.createElement */
 
-const Docs = ({ lists, title }) => {
-  const [clicked, setClicked] = Boostact.useState(false);
-
+const Docs = ({ onClick, opened, lists, title }) => {
   const contents = lists.map(({ name, link }) => {
     return (
       <li onClick={switchBold}>
@@ -31,10 +28,6 @@ const Docs = ({ lists, title }) => {
       lists[i].style.fontWeight = "normal";
     }
     e.target.closest("li").style.fontWeight = "bold";
-  };
-
-  const toggleContents = () => {
-    setClicked(!clicked);
   };
 
   return (

@@ -7,7 +7,7 @@ export const container = {
   padding: "0px 80px",
   fontSize: "18px",
   color: "white",
-  minWidth: "70%",
+  minWidth: `calc(70% + 20px)`,
   paddingLeft: `calc(15% - 20px)`,
   paddingRight: "15%",
 };
