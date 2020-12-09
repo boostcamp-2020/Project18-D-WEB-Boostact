@@ -1,6 +1,5 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
-import List from "./list";
 import "@fortawesome/fontawesome-free/js/all";
 import { style } from "./style";
 /** @jsx Boostact.createElement */
