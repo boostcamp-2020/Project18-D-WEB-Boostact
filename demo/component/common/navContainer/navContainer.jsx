@@ -9,14 +9,6 @@ const Docs = ({ onClick, opened, lists, title }) => {
     return <List name={name} link={link} />;
   });
 
-  const switchBold = (e) => {
-    const lists = document.getElementsByTagName("li");
-    for (let i = 0; i < lists.length; i++) {
-      lists[i].style.fontWeight = "normal";
-    }
-    e.target.closest("li").style.fontWeight = "bold";
-  };
-
   return (
     <div>
       <button onClick={onClick} className={opened ? classes.buttonClicked : classes.buttonNotClicked}>
