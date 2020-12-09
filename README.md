@@ -1,34 +1,144 @@
-# Project18-D-WEB-Boostact
+# Boostact
 
-# 팀원 소개
+**Boostact** is a **web framework** created using vanilla JavaScript.
+There are many descriptions of how to deal with React, including official documents. However, it is difficult to understand the principle of react deeply with simple examples and explanations. To overcome this, we've tried to **redesign React.**
+And surprisingly, we created Boostact that works just like React!
+(Unexpectedly, it includes our own idea. If we cannot follow the action of the actual React, we tried to solve it in a creative way.)
+Our code is a very small size compared to React, and we cannot say it is excellent in performance at the same time. But rather, **that makes it understandable to any developer who knows JavaScript.**
+We will discuss in detail how to use Boostact and how to implement each Hook, a virtual DOM.
+Please read below.
 
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/99751cab-9e31-4b4c-8bc1-e956edf7adee/Untitled.png](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/99751cab-9e31-4b4c-8bc1-e956edf7adee/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20201117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20201117T133026Z&X-Amz-Expires=86400&X-Amz-Signature=b9b74ddd26a9dc31a33c68ab58328a633f9c5ae508a171527f7222114fbeb3e2&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22)
-- 2020.11.17 웃고있는 팀원들
+# Getting start
 
-### J001 [강경수](https://github.com/kakasoo) 👨🏻‍💻
-> 가는 Request가 고와야 오는 Response가 곱다. :100: 
-- mbti : INTJ
-- 도전사항 : 예쁜 코드!
-- TMI : TMI는 뭘 쓰라고 있는 칸이죠?
+## install
 
+To use the Boostact module, webpack and babel are essential. Therefore, please add all of the devDependencies below.  
+**Create project**
 
-### J013 [구승효](https://github.com/SeunghyoKu) 👩🏻‍💻
-> 부캠 6개월이면 구승효도 코딩을 한다. :dog2: 
-- mbti : INFP
-- 도전사항 : 마지막을 불태우겠습니다. :fire: 
-- TMI : 이번 롤 시즌 결국 골딱이로 마감.. 
+```
+mkdir projectFolder
+npm init -y
+npm install boostact
 
+```
 
-### J107 [심재익](https://github.com/simjaeik) 😆
-> 코딩도 식후경 🍗
-- mbti: ENFP
-- 도전사항 : 현업개발자 앞에서도 당당하게 바닐라 js 잘한다고 말할수 있게 하기. 👊
-- TMI : 맥주 그라가스 🍻
+**install babel**
 
-### J200  [지화영](https://github.com/ji3427) 😆
-> 무오류는 금이다.
-- mbti : INTP
-- 도전사항 : 자바스크립트 이해하기.
+```
+npm install @babel/cli @babel/core @babel/polyfill @babel/preset-env @babel/preset-react --save-dev
 
-# 기술 스택
-![JS](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbUbIMC%2FbtqOP4smgC8%2FFba1TSl7Wqkguz4szX8VO0%2Fimg.png)
+```
+
+**install webpack**
+
+```
+npm install webpack webpack-cli webpack-dev-server --save-dev
+npm install html-webpack-plugin mini-css-extract-plugin --save-dev
+
+```
+
+Now you can create a webpack run command in package.json!
+Below are .babelrc files and webpack.config.js files. You can modify it according to what you want.
+**.babelrc**
+
+```
+{
+    "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
+
+```
+
+**webpack.config.js**
+
+```
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require("path");
+module.exports = {
+    mode: "development",
+    entry: {
+        index: ["@babel/polyfill", "./index.js"],
+    },
+    output: {
+        path: path.join(__dirname, "dist"),
+        filename: "bundle.js",
+    },
+    module: {
+        rules: [
+            {
+                test: /\\.(js|jsx)$/,
+                use: "babel-loader",
+                exclude: /node_modules/,
+            },
+        ],
+    },
+    devServer: {
+        host: "127.0.0.1",
+        contentBase: path.join(__dirname, "/dist"),
+        compress: true,
+        hot: true,
+        inline: true,
+        port: 9000,
+        open: true,
+    },
+    resolve: {
+        extensions: [".js", ".jsx"],
+    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            title: "index",
+            hash: true,
+            chunks: ["index"],
+            filename: "index.html",
+            template: "./index.html",
+        }),
+    ],
+};
+
+```
+
+### index.html
+
+```
+<!DOCTYPE html>
+<body>
+    <div id="root"></div>
+</body>
+<script type="module" src="index.jsx"></script>
+
+```
+
+### index.js
+
+```
+import Boostact from "boostact";
+import App from "./App";
+/** @jsx Boostact.createElement */
+const root = document.getElementById("root");
+Boostact.render(<App />, root);
+
+```
+
+### App.js
+
+```
+import Boostact from "boostact";
+/** @jsx Boostact.createElement */
+const App = () => {
+    return (
+        <div>
+            <h1>Hello!</h1>
+            <h2>This is Boostact!</h2>
+        </div>
+    );
+};
+export default App;
+
+```
+
+If you followed up to here, you can use Boostact. Note that jsDoc should be added so that the babel can parse jsx as Boostact.createElement instead of React.createElement.
+**jsdoc (essential)**
+
+```
+/** @jsx Boostact.createElement/
+
+```
