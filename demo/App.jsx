@@ -6,7 +6,7 @@ import Router from "./Router";
 
 const Main = () => {
   return (
-    <div>
+    <div style={{ fontFamily: "BMJUA" }}>
       <Header />
       <div id="body" style={{ paddingTop: "60px" }}>
         <Router />

@@ -1,6 +1,6 @@
 {
-  "name": "frontend",
-  "version": "1.0.0",
+  "name": "boostact",
+  "version": "1.2.0",
   "main": "index.js",
   "scripts": {
     "build": "webpack -w",
@@ -31,7 +31,10 @@
   "description": "### Project18-D-VanillaMarket https://github.com/boostcamp-2020/Project18-D-WEB-VanillaMarket",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
+    "file-loader": "^6.2.0",
     "preact": "^10.5.7",
+    "react-syntax-highlighter": "^15.4.1",
+    "styled-components": "^5.2.1",
     "vanilla-router": "^1.2.8"
   },
   "repository": {
