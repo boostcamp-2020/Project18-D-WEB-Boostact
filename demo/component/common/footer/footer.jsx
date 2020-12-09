@@ -1,27 +1,27 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
 import A from "../a/a";
-import { style } from "./style";
+import classes from "./style";
 
 /** @jsx Boostact.createElement */
 
 const Footer = () => {
   return (
     <div>
-      <div style={style.footerContainer}>
-        <div className="developers" style={style.developersContainer}>
+      <div className={classes.footerContainer}>
+        <div className={classes.developersContainer}>
           부스트캠프 2020
           <A link="https://github.com/kakasoo" name="J001 강경수"></A>
           <A link="https://github.com/SeunghyoKu" name="J013 구승효"></A>
           <A link="https://github.com/simjaeik" name="J107 심재익"></A>
           <A link="https://github.com/ji3427" name="J200 지화영"></A>
         </div>
-        <div className="channels" style={style.developersContainer}>
+        <div className={classes.developersContainer}>
           채널
           <A link="https://github.com/boostcamp-2020/Project18-D-WEB-Boostact/" name="GitHub"></A>
           <A link="https://www.npmjs.com/package/boostact" name="npm"></A>
         </div>
-        <div className="readmore" style={style.developersContainer}>
+        <div className={classes.developersContainer}>
           더보기
           <A link="https://github.com/boostcamp-2020/Project18-D-WEB-Boostact/wiki" name="팀 위키"></A>
           <A
