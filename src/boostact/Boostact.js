@@ -278,6 +278,10 @@ const updateNode = (currentNode) => {
         dom.removeEventListener(eventType, oldProps[name]);
       } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
         if (currentNode.type === "TEXT_NODE") continue;
+        if(name === "className"){
+          dom.removeAttribute("class")
+          continue;
+        }
         dom.removeAttribute(name);
       }
     }
