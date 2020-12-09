@@ -1,13 +1,11 @@
-export const style = {
+import jss from "jss";
+import preset from "jss-preset-default";
+
+jss.setup(preset());
+
+const style = {
   isClicked: { display: "flex", flexDirection: "column" },
   isNotClicked: { display: "none" },
-  titleClicked: {
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
-  titleNotClicked: {
-    cursor: "pointer",
-  },
   buttonClicked: {
     cursor: "pointer",
     fontSize: "14px",
@@ -26,10 +24,9 @@ export const style = {
     color: "#6d6d6d",
     fontWeight: "bold",
   },
-  iconClicked: { marginLeft: "3px", fontSize: "10px", color: "black" },
-  iconNotClicked: { marginLeft: "3px", fontSize: "10px" },
-  li: { cursor: "pointer" },
-
-  // hover 되었을 때: #6d6d6d
-  // click 되었을 때: fontWeight: "bold"
+  li: { cursor: "pointer", "&:hover": { color: "#6d6d6d" } },
 };
+
+const { classes } = jss.createStyleSheet(style).attach();
+
+export default classes;
