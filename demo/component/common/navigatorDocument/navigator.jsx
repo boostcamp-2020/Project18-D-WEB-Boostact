@@ -1,7 +1,7 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
 import NavContainer from "../navContainer/navContainer";
-import { style } from "./style";
+import classes from "./style";
 /** @jsx Boostact.createElement */
 
 const initialState = { opened: null };
@@ -51,7 +51,7 @@ const Docs = () => {
   ];
 
   return (
-    <div style={style.navContainer}>
+    <div className={classes.navContainer}>
       <NavContainer onClick={() => dispatch({ type: 1 })} title="설치하기" lists={contentsInstall} opened={state.opened === 1} />
       <NavContainer onClick={() => dispatch({ type: 2 })} title="주요 개념" lists={contentsConcept} opened={state.opened === 2} />
       <NavContainer onClick={() => dispatch({ type: 3 })} title="HOOKS" lists={contentsHooks} opened={state.opened === 3} />

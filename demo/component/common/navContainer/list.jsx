@@ -1,14 +1,12 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
-import { style } from "./style";
+import classes from "./style";
 /** @jsx Boostact.createElement */
 const List = ({ name, link }) => {
   return (
     <li onClick={switchBold}>
       <Route.Link to={link}>
-        <span style={style.li} onMouseOver={(e) => (e.target.style.color = "#6d6d6d")} onMouseOut={(e) => (e.target.style.color = "black")}>
-          {name}
-        </span>
+        <span className={classes.li}>{name}</span>
       </Route.Link>
     </li>
   );
