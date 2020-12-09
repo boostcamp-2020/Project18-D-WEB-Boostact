@@ -8,7 +8,7 @@ const Main = () => {
   return (
     <div style={{ fontFamily: "BMJUA" }}>
       <Header />
-      <div id="body">
+      <div id="body" style={{ paddingTop: "60px" }}>
         <Router />
       </div>
       <Footer />
