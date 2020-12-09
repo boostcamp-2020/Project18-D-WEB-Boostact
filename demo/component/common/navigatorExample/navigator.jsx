@@ -1,6 +1,6 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import NavContainer from "../navContainer/navContainer";
-import { style } from "./style";
+import classes from "./style";
 /** @jsx Boostact.createElement */
 const initialState = { opened: 1 };
 
@@ -30,7 +30,7 @@ const Docs = () => {
   ];
 
   return (
-    <div style={style.navContainer}>
+    <div className={classes.navContainer}>
       <NavContainer onClick={() => dispatch({ type: 1 })} title="예제" lists={contentsExample} opened={state.opened === 1} />
     </div>
   );
