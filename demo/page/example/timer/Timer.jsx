@@ -14,7 +14,6 @@ const Timer = () => {
   const [hours, setHours] = Boostact.useState(numPad(startTime.getHours()));
   const [minutes, setMinutes] = Boostact.useState(numPad(startTime.getMinutes()));
   const [seconds, setSeconds] = Boostact.useState(numPad(startTime.getSeconds()));
-  let beforeOrAfter = "PM";
   Boostact.useEffect(() => {
     const intervalId = setInterval(() => {
       const timer = new Date();
@@ -32,7 +31,8 @@ const Timer = () => {
         style={{
           justifyContent: "center",
           alignItems: "center",
-          fontSize: "120px",
+          fontSize: "110px",
+          textAlign: "center",
         }}
       >
         <div
@@ -99,7 +99,6 @@ const Timer = () => {
           >
             <div>
               <p style={{ margin: "0px" }}>{seconds}</p>
-              <p style={{ fontWeight: "800", fontSize: "25px", margin: "0px", paddingLeft: "90px" }}> {beforeOrAfter}</p>
             </div>
           </div>
         </div>

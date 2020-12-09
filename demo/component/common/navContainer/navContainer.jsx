@@ -1,22 +1,18 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
+import List from "./list";
 import "@fortawesome/fontawesome-free/js/all";
 import { style } from "./style";
 /** @jsx Boostact.createElement */
 
 const Docs = ({ lists, title }) => {
   const [clicked, setClicked] = Boostact.useState(false);
-  // const [hovered, setHovered] = Boostact.useState(false);
+
   const contents = lists.map(({ name, link }) => {
     return (
-      <li>
+      <li onClick={switchBold}>
         <Route.Link to={link}>
-          <span
-            style={style.li}
-            onMouseOver={(e) => (e.target.style.color = "#6d6d6d")}
-            onMouseOut={(e) => (e.target.style.color = "black")}
-            style={clicked ? { fontWeight: "bold" } : { color: "red" }}
-          >
+          <span style={style.li} onMouseOver={(e) => (e.target.style.color = "#6d6d6d")} onMouseOut={(e) => (e.target.style.color = "black")}>
             {name}
           </span>
         </Route.Link>
@@ -24,13 +20,17 @@ const Docs = ({ lists, title }) => {
     );
   });
 
+  const switchBold = (e) => {
+    const lists = document.getElementsByTagName("li");
+    for (let i = 0; i < lists.length; i++) {
+      lists[i].style.fontWeight = "normal";
+    }
+    e.target.closest("li").style.fontWeight = "bold";
+  };
+
   const toggleContents = () => {
     setClicked(!clicked);
   };
-
-  // const hoverContents = () => {
-  //   setHovered(!hovered);
-  // };
 
   return (
     <div>
