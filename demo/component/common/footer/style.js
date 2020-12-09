@@ -15,10 +15,4 @@ export const style = {
     marginTop: "10px",
     marginBottom: "10px",
   },
-  a: {
-    color: "white",
-    marginTop: "10px",
-    textDecoration: "none",
-    fontSize: "14px",
-  },
 };

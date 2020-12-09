@@ -7,14 +7,11 @@ import Router from "./router";
 const Main = () => {
   return (
     <div style={{ fontFamily: "BMJUA" }}>
-      <section id="header">
-        <Header />
-        <section id="body">
-          <Router />
-          {/* <Navigator /> */}
-        </section>
-        <Footer />
-      </section>
+      <Header />
+      <div id="body">
+        <Router />
+      </div>
+      <Footer />
     </div>
   );
 };

@@ -1,12 +1,12 @@
 import Boostact from "../../../src/boostact/Boostact";
+import Navigator from "../../component/common/navigatorExample/navigator";
 /** @jsx Boostact.createElement */
 
 const Example = () => {
   return (
     <div>
       <div>
-        <h1>Hello World</h1>
-        <h2>This is Example !</h2>
+        <Navigator />
       </div>
     </div>
   );
