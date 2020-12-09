@@ -32,6 +32,8 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "file-loader": "^6.2.0",
+    "jss": "^10.5.0",
+    "jss-preset-default": "^10.5.0",
     "preact": "^10.5.7",
     "react-syntax-highlighter": "^15.4.1",
     "styled-components": "^5.2.1",
