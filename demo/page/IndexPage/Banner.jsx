@@ -13,7 +13,7 @@ const Banner = () => {
         <div className={classes.leftButton}>
           <Button href="./document" name="시작하기"></Button>
         </div>
-        <Button href="./document" name="버전관리"></Button>
+        <Button href="./bugReport" name="버전관리"></Button>
       </div>
     </div>
   );
