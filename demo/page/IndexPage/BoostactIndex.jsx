@@ -1,17 +1,18 @@
 import Boostact from "../../../src/boostact/Boostact";
 import Banner from "./Banner";
 import Gist from "./Gist";
+import classes from "./style";
 import SimpleContents from "./SimpleContents";
 
 /** @jsx Boostact.createElement */
 
 const BoostactIndex = () => {
   return (
-    <div style={{ minWidth: "100%" }}>
+    <div>
       <Banner />
-      <div id="contents" style={{ minWidth: "70%", marginLeft: "15%", marginRight: "15%" }}>
+      <div className={classes.contents}>
         <Gist />
-        <hr style={{ marginTop: "90px", marginBottom: "90px" }} />
+        <hr className={classes.divider} />
         <SimpleContents />
       </div>
     </div>

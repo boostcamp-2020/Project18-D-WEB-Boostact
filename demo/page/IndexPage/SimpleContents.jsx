@@ -1,12 +1,12 @@
 import Boostact from "../../../src/boostact/Boostact";
 import Timer from "../example/timer/Timer";
 import TodoList from "../example/todoList/todoTemplate";
+import CodeString from "./CodeString";
 import classes from "./style";
 
 /** @jsx Boostact.createElement */
 
 const SimpleContents = () => {
-  const codeString = "/**@jsx Boosact.createElement */";
   return (
     <div id="SimpleContents">
       <div className={classes.Content}>
@@ -17,9 +17,12 @@ const SimpleContents = () => {
             따라서 Boostact는 jsx를 React.createElement로 트랜스파일링하지 않고 Boostact.createElement로 트랜스파일하게끔 유도할 필요가 있습니다.
           </p>
           <p className={classes.article}>따라서 Boostact를 사용하기 위해서는, jsx를 사용하는 파일마다 우측과 같은 주석을 필요로 합니다.</p>
+          <p className={classes.article}> 겸사겸사 렌더링이 빠르게 진행되는 것도 확인할 수 있습니다.</p>
         </div>
         <div className={classes.exampleCommon + " " + classes.exampleBox1}>
-          <div className={classes.exampleCode}>{codeString}</div>
+          <div className={classes.exampleCode}>
+            <CodeString />
+          </div>
         </div>
       </div>
 
