@@ -1,6 +1,6 @@
 {
   "name": "boostact",
-  "version": "1.2.0",
+  "version": "1.2.12",
   "main": "index.js",
   "scripts": {
     "build": "webpack -w",
@@ -27,8 +27,14 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0"
   },
-  "keywords": [],
-  "description": "### Project18-D-VanillaMarket https://github.com/boostcamp-2020/Project18-D-WEB-VanillaMarket",
+  "keywords": [
+    "boostact",
+    "react clone coding",
+    "boostcampweb",
+    "framework",
+    "vanillaJS",
+    "pureJS"
+  ],
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.1",
     "file-loader": "^6.2.0",

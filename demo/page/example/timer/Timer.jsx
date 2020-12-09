@@ -1,4 +1,6 @@
 import Boostact from "../../../../src/boostact/Boostact";
+import classes from "./style";
+
 /** @jsx Boostact.createElement */
 
 const numPad = (num) => {
@@ -14,6 +16,7 @@ const Timer = () => {
   const [hours, setHours] = Boostact.useState(numPad(startTime.getHours()));
   const [minutes, setMinutes] = Boostact.useState(numPad(startTime.getMinutes()));
   const [seconds, setSeconds] = Boostact.useState(numPad(startTime.getSeconds()));
+
   Boostact.useEffect(() => {
     const intervalId = setInterval(() => {
       const timer = new Date();
@@ -21,84 +24,32 @@ const Timer = () => {
       setMinutes(numPad(timer.getMinutes()));
       setHours(numPad(timer.getHours()));
     }, 1000);
+
     return () => {
       clearInterval(intervalId);
     };
   }, [seconds, minutes, hours]);
+
   return (
     <div>
-      <div
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          fontSize: "110px",
-          textAlign: "center",
-        }}
-      >
-        <div
-          style={{
-            width: "400px",
-            borderBottom: "50px solid black",
-            borderRight: "50px solid white",
-            borderLeft: "50px solid white",
-          }}
-        ></div>
-        <div
-          id="bigBox"
-          style={{
-            display: "flex",
-            width: "500px",
-            height: "200px",
-          }}
-        >
-          <div
-            id="timesBox"
-            style={{
-              border: "1px solid black",
-              borderBottom: "5px solid black",
-              borderBottomLeftRadius: "10px",
-              display: "flex",
-              width: "150px",
-              height: "200px",
-            }}
-          >
+      <div className={classes.timer}>
+        <div className={classes.topOfTimer} />
+        <div className={classes.bigBox}>
+          <div className={classes.timesBox}>
             <div>
               <span>{hours}</span>
             </div>
           </div>
-          <div class="divider" style={{ width: "25px", border: "3px solid black", height: "200px", borderBottom: "3px solid black" }}>
-            :
-          </div>
-          <div
-            id="minutesBox"
-            style={{
-              border: "1px solid black",
-              borderBottom: "5px solid black",
-              display: "flex",
-              width: "150px",
-              height: "200px",
-            }}
-          >
+          <div className={classes.divider}>:</div>
+          <div className={classes.minutesBox}>
             <div>
               <span>{minutes}</span>
             </div>
           </div>
-          <div class="divider" style={{ width: "25px", border: "3px solid black", height: "200px", borderBottom: "3px solid black" }}>
-            :
-          </div>
-          <div
-            id="secondsBox"
-            style={{
-              border: "1px solid black",
-              borderBottom: "5px solid black",
-              borderBottomRightRadius: "10px",
-              display: "flex",
-              width: "150px",
-              height: "200px",
-            }}
-          >
+          <div className={classes.divider}>:</div>
+          <div className={classes.secondsBox}>
             <div>
-              <p style={{ margin: "0px" }}>{seconds}</p>
+              <p className={classes.noneMarginP}>{seconds}</p>
             </div>
           </div>
         </div>
