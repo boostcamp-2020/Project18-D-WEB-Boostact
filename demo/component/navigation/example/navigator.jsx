@@ -9,7 +9,7 @@ import { Context } from "../../../page/example/example";
 const Docs = () => {
   return (
     <div className={classes.navContainer}>
-      <NavContainer title="예제" lists={exampleList} context={Context} />
+      <NavContainer title="목차" lists={exampleList} context={Context} />
     </div>
   );
 };

@@ -1,14 +1,14 @@
 import Boostact from "../../../src/boostact/Boostact";
 import Navigator from "../../component/navigation/example/navigator";
 import classes from "./style";
-import DocumentRouter from "../document/documentRouter";
+import Router from "./router";
 
 /** @jsx Boostact.createElement */
 const Context = Boostact.createContext();
 
 const Example = () => {
-  const [container, setContainer] = Boostact.useState("예제");
-  const [list, setList] = Boostact.useState("useState");
+  const [container, setContainer] = Boostact.useState("목차");
+  const [list, setList] = Boostact.useState("page_1");
 
   const value = {
     states: { container, list },
@@ -19,7 +19,7 @@ const Example = () => {
     <div style={{ width: "100%", display: "flex" }}>
       <Context.Provider value={value}>
         <div className={classes.DocumentPage}>
-          <DocumentRouter />
+          <Router />
         </div>
         <div className={classes.ASide}>
           <Navigator />
