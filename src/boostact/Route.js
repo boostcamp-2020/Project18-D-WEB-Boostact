@@ -34,7 +34,7 @@ const Route = (props) => {
         children: [Boostact.createElement(props.component)],
       };
     }
-  } else if (window.location.pathname.includes(`${props.path}`)) {
+  } else if (window.location.pathname.includes(props.path)) {
     if (props.path !== "/") {
       props = {
         ...props,
