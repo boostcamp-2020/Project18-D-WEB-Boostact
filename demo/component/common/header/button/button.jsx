@@ -1,6 +1,5 @@
-import { clearConfigCache } from "prettier";
-import Boostact from "../../../../src/boostact/Boostact";
-import Route from "../../../../src/boostact/Route";
+import Boostact from "../../../../../src/boostact/Boostact";
+import Route from "../../../../../src/boostact/Route";
 import { classes, onPage } from "./style";
 
 /** @jsx Boostact.createElement */

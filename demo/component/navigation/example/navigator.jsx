@@ -1,6 +1,7 @@
 import Boostact from "../../../../src/boostact/Boostact";
-import NavContainer from "../navContainer/navContainer";
+import NavContainer from "../container/container";
 import classes from "./style";
+import { exampleList } from "./contents";
 /** @jsx Boostact.createElement */
 const initialState = { opened: 1 };
 
@@ -20,18 +21,9 @@ const reducer = (state, action) => {
 const Docs = () => {
   const [state, dispatch] = Boostact.useReducer(reducer, initialState);
 
-  const contentsExample = [
-    { name: "useState", link: "/useState" },
-    { name: "useEffect", link: "/useEffect" },
-    { name: "useReducer", link: "/useReducer" },
-    { name: "useContext", link: "/useContext" },
-    { name: "useMemo", link: "/useMemo" },
-    { name: "useCallback", link: "/useCallback" },
-  ];
-
   return (
     <div className={classes.navContainer}>
-      <NavContainer onClick={() => dispatch({ type: 1 })} title="예제" lists={contentsExample} opened={state.opened === 1} />
+      <NavContainer onClick={() => dispatch({ type: 1 })} title="예제" lists={exampleList} opened={state.opened === 1} />
     </div>
   );
 };

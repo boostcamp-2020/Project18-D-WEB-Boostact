@@ -11,7 +11,6 @@ const style = {
     backgroundColor: "#20232a",
     color: "#999999",
     fontSize: "16px",
-    marginTop: "100px",
     padding: "70px",
   },
   developersContainer: {

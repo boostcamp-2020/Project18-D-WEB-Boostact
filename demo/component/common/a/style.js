@@ -9,7 +9,7 @@ const styles = {
     marginTop: "10px",
     paddingLeft: "5px",
     textDecoration: "none",
-    fontSize: "14px",
+    fontSize: "20px",
     "&:hover": {
       color: "#61dafb",
     },

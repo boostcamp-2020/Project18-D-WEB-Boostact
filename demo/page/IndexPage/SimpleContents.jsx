@@ -1,6 +1,6 @@
 import Boostact from "../../../src/boostact/Boostact";
-import Timer from "../example/timer/Timer";
-import TodoList from "../example/todoList/todoTemplate";
+import Timer from "./timer/Timer";
+import TodoList from "./todoList/todoTemplate";
 import CodeString from "./CodeString";
 import classes from "./style";
 
