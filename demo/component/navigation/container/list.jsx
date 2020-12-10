@@ -1,23 +1,24 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
 import classes from "./style";
+import { Context } from "../../../page/document/document";
+
 /** @jsx Boostact.createElement */
 const List = ({ name, link }) => {
+  const { states, actions } = Boostact.useContext(Context);
+  const isClicked = states.list === name;
+
+  const switchBold = () => {
+    actions.setList(name);
+  };
+
   return (
     <li onClick={switchBold}>
       <Route.Link to={link}>
-        <span className={classes.li}>{name}</span>
+        <span className={isClicked ? classes.liClicked : classes.li}>{name}</span>
       </Route.Link>
     </li>
   );
-};
-
-const switchBold = (e) => {
-  const lists = document.getElementsByTagName("li");
-  for (let i = 0; i < lists.length; i++) {
-    lists[i].style.fontWeight = "normal";
-  }
-  e.target.closest("li").style.fontWeight = "bold";
 };
 
 export default List;
