@@ -14,7 +14,7 @@ const Header = () => {
       <div className={classes.commonHeaderDiv + " " + classes.centerHeaderDiv}>
         <Button href="/docs" name="문서" />
         <Button href="/examples" name="예제" />
-        <Button href="/bugReport" name="버그리포트" />
+        <Button href="/bugReport" name="개발현황" />
       </div>
       <div className={classes.commonHeaderDiv}>
         <A link="https://www.npmjs.com/package/boostact" name="v1.1.61" />
