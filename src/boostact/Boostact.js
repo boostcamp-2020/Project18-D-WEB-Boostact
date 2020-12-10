@@ -169,7 +169,7 @@ const shallowEqual = (object1, object2) => {
   }
 
   for (const key of keys1) {
-    if(typeof object1[key] === "function") continue;
+    if (typeof object1[key] === "function") continue;
     if (object1[key] && key === "style") {
       if (!object2[key] || !shallowEqual(object1[key], object2[key])) {
         return false;
@@ -224,7 +224,7 @@ const reRender = () => {
   if (!nextVNode) {
     HOOK_ID = 0;
     vRoot = makeVRoot();
-    if(nextVNode){
+    if (nextVNode) {
       vRoot = nextVNode;
     }
     nextVNode = vRoot;
@@ -276,8 +276,8 @@ const updateNode = (currentNode) => {
         dom.removeEventListener(eventType, oldProps[name]);
       } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
         if (currentNode.type === "TEXT_NODE") continue;
-        if(name === "className"){
-          dom.removeAttribute("class")
+        if (name === "className") {
+          dom.removeAttribute("class");
           continue;
         }
         dom.removeAttribute(name);
@@ -409,9 +409,9 @@ const useEffect = (fn, arr) => {
       throw new Error("useEffect must be return function.");
     }
   } else if (!HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
-   if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
-     HOOKS[CURRENT_HOOK_ID].cleanUp();
-   }
+    if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
+      HOOKS[CURRENT_HOOK_ID].cleanUp();
+    }
     HOOKS[CURRENT_HOOK_ID].work = fn;
     HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
     if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {

@@ -22,6 +22,7 @@ const Link = (props) => {
 const Route = (props) => {
   if (!window.router.duplicate(props.path)) {
     window.router.add(props.path, () => {
+      window.scrollTo(0, 0);
       Boostact.initHook();
       Boostact.reRender();
     });

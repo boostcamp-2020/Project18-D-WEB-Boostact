@@ -26,7 +26,6 @@ const Docs = ({ id, lists, title }) => {
     <div>
       <button onClick={doSetContainer} className={isOpened ? classes.buttonClicked : classes.buttonNotClicked}>
         {title}
-        <i className="fas fa-chevron-down" style={{ marginLeft: "4px", fontSize: "12px" }}></i>
       </button>
       <ol className={isOpened ? classes.isClicked : classes.isNotClicked}>{contents}</ol>
     </div>
