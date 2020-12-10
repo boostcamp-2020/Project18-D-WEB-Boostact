@@ -171,7 +171,7 @@ const shallowEqual = (object1, object2) => {
   for (const key of keys1) {
     if(typeof object1[key] === "function") continue;
     if (object1[key] && key === "style") {
-      if (!object2[key] && !shallowEqual(object1[key], object2[key])) {
+      if (!object2[key] || !shallowEqual(object1[key], object2[key])) {
         return false;
       }
     } else if (object1[key] !== object2[key]) {
