@@ -1,5 +1,4 @@
 import Boostact from "../../../../src/boostact/Boostact";
-import Route from "../../../../src/boostact/Route";
 import "@fortawesome/fontawesome-free/js/all";
 import List from "./list";
 import classes from "./style";

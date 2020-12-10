@@ -27,11 +27,20 @@ const Route = (props) => {
     });
   }
 
-  if (window.location.href === `${window.location.origin}${props.path}`) {
-    props = {
-      ...props,
-      children: [Boostact.createElement(props.component)],
-    };
+  if (window.location.pathname === "/") {
+    if (props.path === "/") {
+      props = {
+        ...props,
+        children: [Boostact.createElement(props.component)],
+      };
+    }
+  } else if (window.location.pathname.includes(`${props.path}`)) {
+    if (props.path !== "/") {
+      props = {
+        ...props,
+        children: [Boostact.createElement(props.component)],
+      };
+    }
   }
   return { type: "ROUTER", props };
 };

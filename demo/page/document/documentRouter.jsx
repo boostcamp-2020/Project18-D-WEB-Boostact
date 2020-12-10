@@ -7,9 +7,7 @@ import HelloWorld from "./helloWorld/helloWorld";
 
 const DocumentRouter = () => {
   return (
-    <div id="ROUTING">
-      <Route.Route path="/docs/hello_world" component={HelloWorld}></Route.Route>
-      <Route.Route path="/docs/hello_world" component={HelloWorld}></Route.Route>
+    <div>
       <Route.Route path="/docs/hello_world" component={HelloWorld}></Route.Route>
     </div>
   );

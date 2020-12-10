@@ -4,8 +4,8 @@ import preset from "jss-preset-default";
 jss.setup(preset());
 
 const style = {
-  DocumentPage: { minWidth: "60%", paddingLeft: "20%" },
-  ASide: { width: "20%", minHeight: "700px", background: "#f7f7f7" },
+  DocumentPage: { minWidth: "50%", paddingLeft: "20%" },
+  ASide: { paddingTop: "5%", width: "30%", minHeight: "700px", background: "#f7f7f7" },
 };
 
 const { classes } = jss.createStyleSheet(style).attach();
