@@ -16,6 +16,7 @@ const styles = {
     minWidth: "calc(70% + 20px)",
     paddingLeft: "calc(15% - 20px)",
     paddingRight: "15%",
+    zIndex: "3",
   },
 
   commonHeaderDiv: {

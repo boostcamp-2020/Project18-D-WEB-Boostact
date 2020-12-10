@@ -2,13 +2,15 @@ import Boostact from "../src/boostact/Boostact";
 import Header from "./component/common/header/header";
 import Footer from "./component/common/footer/footer";
 import Router from "./Router";
+import HeadDecoration from "./component/common/header/HeadDecoration";
 /** @jsx Boostact.createElement */
 
 const Main = () => {
   return (
     <div style={{ fontFamily: "IBMPlexSansKR-Regular" }}>
       <Header />
-      <div id="body" style={{ paddingTop: "60px" }}>
+      <HeadDecoration />
+      <div id="body">
         <Router />
       </div>
       <Footer />

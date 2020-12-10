@@ -22,6 +22,7 @@ const Link = (props) => {
 const Route = (props) => {
   if (!window.router.duplicate(props.path)) {
     window.router.add(props.path, () => {
+      window.scrollTo(0, 0);
       Boostact.initHook();
       Boostact.reRender();
     });
@@ -34,12 +35,19 @@ const Route = (props) => {
         children: [Boostact.createElement(props.component)],
       };
     }
-  } else if (window.location.pathname.includes(`${props.path}`)) {
+  } else if (window.location.pathname.includes(props.path)) {
     if (props.path !== "/") {
-      props = {
-        ...props,
-        children: [Boostact.createElement(props.component)],
-      };
+      if (props.exact && window.location.pathname === props.path) {
+        props = {
+          ...props,
+          children: [Boostact.createElement(props.component)],
+        };
+      } else if (!props.exact) {
+        props = {
+          ...props,
+          children: [Boostact.createElement(props.component)],
+        };
+      }
     }
   }
   return { type: "ROUTER", props };
