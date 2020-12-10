@@ -4,7 +4,7 @@
 
 import Boostact from "../src/boostact/Boostact";
 import Route from "../src/boostact/Route";
-import Document from "./page/document/document";
+import { Document } from "./page/document/document";
 import Example from "./page/example/example";
 import BugReport from "./page/bugReport/bugReport";
 import IndexPage from "./page/IndexPage/BoostactIndex";
