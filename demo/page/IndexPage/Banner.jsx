@@ -1,5 +1,5 @@
 import Boostact from "../../../src/boostact/Boostact";
-import Button from "../../component/common/button/button.jsx";
+import Button from "../../component/common/header/button/button.jsx";
 import classes from "./style";
 
 /** @jsx Boostact.createElement */

@@ -1,11 +1,16 @@
 import Boostact from "../../../src/boostact/Boostact";
-import Navigator from "../../component/common/navigatorDocument/navigator";
+import classes from "./style";
+import Navigator from "../../component/navigation/document/navigator";
+import DocumentRouter from "./documentRouter";
 /** @jsx Boostact.createElement */
 
 const Document = () => {
   return (
-    <div>
-      <div>
+    <div style={{ width: "100%", display: "flex" }}>
+      <div className={classes.DocumentPage}>
+        <DocumentRouter />
+      </div>
+      <div className={classes.ASide}>
         <Navigator />
       </div>
     </div>

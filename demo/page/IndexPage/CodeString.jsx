@@ -7,41 +7,13 @@ const getRandomColor = () => {
 };
 
 const CodeString = () => {
+  const code = "/** @jsx Boostact.createElement /";
+
   return (
     <div>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>/</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>*</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>*</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>@</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>j</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>s</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>x</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>&nbsp;</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>B</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>o</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>o</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>s</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>t</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>a</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>c</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>t</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>.</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>c</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>r</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>e</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>a</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>t</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>e</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>E</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>l</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>e</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>m</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>e</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>n</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>t</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>&nbsp;</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>*</span>
-      <span style={{ color: getRandomColor(), textShadow: `3px 3px ${getRandomColor()}` }}>/</span>
+      {code.split("").map((el) => {
+        return <span style={{ color: getRandomColor(), textShadow: `1px 1px ${getRandomColor()}` }}>{el}</span>;
+      })}
     </div>
   );
 };

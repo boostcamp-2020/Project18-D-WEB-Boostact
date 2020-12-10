@@ -6,7 +6,7 @@ jss.setup(preset());
 const style = {
   navContainer: {
     width: "30%",
-    backgroundColor: "#dddddd",
+    backgroundColor: "#f7f7f7",
   },
 };
 
