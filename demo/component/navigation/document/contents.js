@@ -11,4 +11,5 @@ export const HooksList = [
   { name: "useContext", link: "/docs/useContext" },
   { name: "useReducer", link: "/docs/useReducer" },
   { name: "useMemo", link: "/docs/useMemo" },
+  { name: "useCallback", link: "/docs/useCallback" },
 ];
