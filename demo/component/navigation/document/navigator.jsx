@@ -8,9 +8,9 @@ import classes from "./style";
 const Docs = () => {
   return (
     <div className={classes.navContainer}>
-      <NavContainer title="설치하기" lists={InstallList} id="1" />
-      <NavContainer title="주요 개념" lists={ConceptList} id="2" />
-      <NavContainer title="HOOKS" lists={HooksList} id="3" />
+      <NavContainer title="설치하기" lists={InstallList} />
+      <NavContainer title="주요 개념" lists={ConceptList} />
+      <NavContainer title="HOOKS" lists={HooksList} />
     </div>
   );
 };

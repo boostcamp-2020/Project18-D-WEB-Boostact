@@ -7,8 +7,8 @@ import DocumentRouter from "./documentRouter";
 const Context = Boostact.createContext();
 
 const Document = () => {
-  const [container, setContainer] = Boostact.useState(null);
-  const [list, setList] = Boostact.useState(null);
+  const [container, setContainer] = Boostact.useState("설치하기");
+  const [list, setList] = Boostact.useState("Hello World");
 
   const value = {
     states: { container, list },

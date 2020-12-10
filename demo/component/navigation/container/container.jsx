@@ -9,18 +9,18 @@ import { Context } from "../../../page/document/document";
 
 const Docs = ({ id, lists, title }) => {
   const { states, actions } = Boostact.useContext(Context);
-  const isOpened = states.container === id;
+  const isOpened = states.container === title;
 
   const contents = lists.map(({ name, link }) => {
     return <List name={name} link={link} />;
   });
 
   const doSetContainer = () => {
-    if (states.container === id) {
+    if (states.container === title) {
       actions.setContainer(null);
       return;
     }
-    actions.setContainer(id);
+    actions.setContainer(title);
   };
 
   return (
