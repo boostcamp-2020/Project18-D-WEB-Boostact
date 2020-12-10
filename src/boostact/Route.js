@@ -36,10 +36,17 @@ const Route = (props) => {
     }
   } else if (window.location.pathname.includes(props.path)) {
     if (props.path !== "/") {
-      props = {
-        ...props,
-        children: [Boostact.createElement(props.component)],
-      };
+      if (props.exact && window.location.pathname === props.path) {
+        props = {
+          ...props,
+          children: [Boostact.createElement(props.component)],
+        };
+      } else if (!props.exact) {
+        props = {
+          ...props,
+          children: [Boostact.createElement(props.component)],
+        };
+      }
     }
   }
   return { type: "ROUTER", props };

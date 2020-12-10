@@ -12,7 +12,7 @@ const Header = () => {
         <Button href="/" name="Boostact"></Button>
       </div>
       <div className={classes.commonHeaderDiv + " " + classes.centerHeaderDiv}>
-        <Button href="/docs/hello_world" name="문서" />
+        <Button href="/docs" name="문서" />
         <Button href="/examples" name="예제" />
         <Button href="/bugReport" name="버그리포트" />
       </div>
