@@ -4,7 +4,7 @@ import { Document } from "./page/document/document";
 import { Example } from "./page/example/example";
 import BugReport from "./page/bugReport/bugReport";
 import IndexPage from "./page/IndexPage/BoostactIndex";
-import HelloWorld from "./page/document/helloWorld/helloWorld";
+import HelloWorld from "./page/document/index/helloWorld";
 
 /** @jsx Boostact.createElement */
 

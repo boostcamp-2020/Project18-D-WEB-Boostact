@@ -6,10 +6,9 @@ import classes from "./style";
 
 /** @jsx Boostact.createElement */
 
-const Docs = ({ lists, title, context }) => {
+const Container = ({ lists, title, context }) => {
   const { states, actions } = Boostact.useContext(context);
   const isOpened = states.container === title;
-
   const contents = lists.map(({ name, link }) => {
     return <List name={name} link={link} context={context} />;
   });
@@ -31,4 +30,4 @@ const Docs = ({ lists, title, context }) => {
     </div>
   );
 };
-export default Docs;
+export default Container;
