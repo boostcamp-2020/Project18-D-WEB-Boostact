@@ -1,11 +1,10 @@
 import Boostact from "../../../../src/boostact/Boostact";
 import Route from "../../../../src/boostact/Route";
 import classes from "./style";
-import { Context } from "../../../page/document/document";
 
 /** @jsx Boostact.createElement */
-const List = ({ name, link }) => {
-  const { states, actions } = Boostact.useContext(Context);
+const List = ({ name, link, context }) => {
+  const { states, actions } = Boostact.useContext(context);
   const isClicked = states.list === name;
 
   const switchBold = () => {

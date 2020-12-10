@@ -1,17 +1,17 @@
 import Boostact from "../../../../src/boostact/Boostact";
+import Route from "../../../../src/boostact/Route";
 import "@fortawesome/fontawesome-free/js/all";
 import List from "./list";
 import classes from "./style";
 
-import { Context } from "../../../page/document/document";
 /** @jsx Boostact.createElement */
 
-const Docs = ({ id, lists, title }) => {
-  const { states, actions } = Boostact.useContext(Context);
+const Docs = ({ lists, title, context }) => {
+  const { states, actions } = Boostact.useContext(context);
   const isOpened = states.container === title;
 
   const contents = lists.map(({ name, link }) => {
-    return <List name={name} link={link} />;
+    return <List name={name} link={link} context={context} />;
   });
 
   const doSetContainer = () => {
