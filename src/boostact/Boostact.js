@@ -171,7 +171,7 @@ const shallowEqual = (object1, object2) => {
   for (const key of keys1) {
     if(typeof object1[key] === "function") continue;
     if (object1[key] && key === "style") {
-      if (!object2[key] && !shallowEqual(object1[key], object2[key])) {
+      if (!object2[key] || !shallowEqual(object1[key], object2[key])) {
         return false;
       }
     } else if (object1[key] !== object2[key]) {
@@ -271,7 +271,10 @@ const updateNode = (currentNode) => {
 
   for (const name in oldProps) {
     if (name !== "children") {
-      if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+      if (name.startsWith("on") && typeof newProps[name] === "function") {
+        const eventType = name.toLowerCase().substring(2);
+        dom.removeEventListener(eventType, oldProps[name]);
+      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
         if (currentNode.type === "TEXT_NODE") continue;
         if(name === "className"){
           dom.removeAttribute("class")
@@ -284,7 +287,10 @@ const updateNode = (currentNode) => {
 
   for (const name in newProps) {
     if (name !== "children") {
-      if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+      if (name.startsWith("on") && typeof newProps[name] === "function") {
+        const eventType = name.toLowerCase().substring(2);
+        dom.addEventListener(eventType, newProps[name]);
+      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
         dom[name] = newProps[name];
 
         if (name === "style") {
