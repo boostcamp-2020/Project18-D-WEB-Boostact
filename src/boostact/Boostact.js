@@ -246,7 +246,11 @@ const VNodeToRNode = (vNode) => {
         Object.keys(vNode.props.style).forEach((prop) => {
           newNode.style[prop] = vNode.props[attribute][prop];
         });
-      } else {
+      }
+      else if (attribute === "dangerouslySetInnerHTML"){
+        newNode.innerHTML = vNode.props[attribute];
+      }
+      else {
         newNode[attribute] = vNode.props[attribute];
       }
     });
