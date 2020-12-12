@@ -63,6 +63,7 @@ const workLoop = (deadline) => {
     reflectDOM(vRoot);
     currentRoot = vRoot;
     vRoot = undefined;
+    container.appendChild(currentRoot.parent.dom)
     HOOK_ID = INIT_VALUE;
   }
   requestIdleCallback(workLoop);
@@ -157,7 +158,7 @@ const makeVRoot = () => {
       ...component.props,
     },
     parent: {
-      dom: container,
+      dom: document.createDocumentFragment(),
     },
     child: currentRoot && currentRoot.child,
     effectTag: currentRoot && currentRoot.type === component.type ? (isUnchanged(currentRoot, component) ? "NONE" : "UPDATE") : "PLACEMENT",
