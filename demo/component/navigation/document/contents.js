@@ -1,4 +1,4 @@
-export const InstallList = [{ name: "Hello World", link: "/docs/hello_world" }];
+export const InstallList = [{ name: "Hello World", link: "/docs" }];
 
 export const ConceptList = [
   { name: "Virtual DOM", link: "/docs/virtual_dom" },

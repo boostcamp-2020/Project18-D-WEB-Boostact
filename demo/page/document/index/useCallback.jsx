@@ -2,12 +2,12 @@ import Boostact from "../../../../src/boostact/Boostact";
 
 /** @jsx Boostact.createElement */
 
-const hooksState = () => {
-  return (
-    <div>
-      <h1>This is useCallback</h1>
-    </div>
-  );
+const string = marked(`
+# Hello world3
+`);
+
+const hooksState3 = () => {
+  return <div>asd3</div>;
 };
 
-export default hooksState;
+export default hooksState3;
