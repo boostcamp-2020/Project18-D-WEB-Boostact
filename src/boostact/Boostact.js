@@ -211,6 +211,12 @@ const determineState = (curChild, vChild) => {
     vChild.dom = null;
     vChild.effectTag = "PLACEMENT";
   }
+
+  if (vChild && curChild && curChild.props.dangerouslySetInnerHTML) {
+    vChild.alternate = curChild;
+    vChild.dom = null;
+    vChild.effectTag = "PLACEMENT";
+  }
 };
 
 const render = (el, root) => {
@@ -246,6 +252,8 @@ const VNodeToRNode = (vNode) => {
         Object.keys(vNode.props.style).forEach((prop) => {
           newNode.style[prop] = vNode.props[attribute][prop];
         });
+      } else if (attribute === "dangerouslySetInnerHTML") {
+        newNode.innerHTML = vNode.props[attribute];
       } else {
         newNode[attribute] = vNode.props[attribute];
       }
@@ -297,6 +305,9 @@ const updateNode = (currentNode) => {
           Object.keys(newProps[name]).forEach((prop) => {
             dom[name][prop] = newProps[name][prop];
           });
+        }
+        if (name === "dangerouslySetInnerHTML") {
+          dom.innerHTML = newProps[name];
         }
       }
     }
