@@ -30,10 +30,8 @@ const style = {
     border: "none",
   },
   todoList: { minHeight: "0rem" },
-  checkedBox: { display: "flex", cursor: "pointer", fontSize: "15px", flex: "1" },
-  checkedName: { marginLeft: "1rem", textDecoration: "line-through" },
-  notCheckedBox: { display: "flex", cursor: "pointer", fontSize: "15px", flex: "1" },
-  notCheckedName: { marginLeft: "1rem" },
+  checkedName: { flex: 1, textDecoration: "line-through" },
+  notCheckedName: { flex: 1 },
   TodoListItem: { display: "flex", height: "2rem", alignItems: "center", padding: "0px", border: "1px solid #F2F2F2" },
   remove: {
     width: "10%",

@@ -1,5 +1,4 @@
 import Boostact from "../../../../src/boostact/Boostact";
-import "@fortawesome/fontawesome-free/js/all";
 import classes from "./style";
 /** @jsx Boostact.createElement */
 
@@ -66,7 +65,7 @@ const TodoInsert = ({ onInsert }) => {
     <form className={classes.inputDiv}>
       <input className={classes.input} placeholder="어서 일해라" value={value} onInput={onChange} />
       <button className={classes.addList} onClick={onClick}>
-        <i className="fas fa-plus" />
+        +
       </button>
     </form>
   );
@@ -85,17 +84,9 @@ const TodoList = ({ todo, onDelete, onToggle }) => {
 const TodoListItem = ({ todoItem, onDelete, onToggle }) => {
   const { id, name, isDone } = todoItem;
   const clilckDone = () => {
-    if (isDone)
-      return (
-        <div className={classes.checkedBox} onClick={() => onToggle(id)}>
-          <i className="fas fa-check-square" style={{ color: "lightgray" }} />
-          <div className={classes.checkedName}>{name}</div>
-        </div>
-      );
     return (
-      <div className={classes.notCheckedBox} onClick={() => onToggle(id)}>
-        <i className="far fa-square" style={{ color: "lightgray" }} />
-        <div className={classes.notCheckedName}>{name}</div>
+      <div className={isDone ? classes.checkedName : classes.notCheckedName} onClick={() => onToggle(id)}>
+        {name}
       </div>
     );
   };
@@ -103,7 +94,7 @@ const TodoListItem = ({ todoItem, onDelete, onToggle }) => {
     <div className={classes.TodoListItem}>
       {clilckDone()}
       <div className={classes.remove} onClick={() => onDelete(id)}>
-        <i className="fas fa-minus"></i>
+        -
       </div>
     </div>
   );
