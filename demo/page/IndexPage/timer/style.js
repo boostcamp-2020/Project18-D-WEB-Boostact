@@ -4,7 +4,7 @@ import preset from "jss-preset-default";
 jss.setup(preset());
 
 const styleSheet = {
-  timer: { justifyContent: "center", alignItems: "center", fontSize: "110px", textAlign: "center" },
+  timer: { width: "90%", fontSize: "110px" },
   topOfTimer: {
     width: "400px",
     borderBottom: "50px solid black",
