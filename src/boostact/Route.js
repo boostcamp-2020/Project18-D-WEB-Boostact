@@ -29,7 +29,6 @@ const Route = (props) => {
   }
 
   if (window.location.pathname === "/" && props.path === "/") {
-    console.log("root에 대한 처리");
     props = {
       ...props,
       children: [Boostact.createElement(props.component)],

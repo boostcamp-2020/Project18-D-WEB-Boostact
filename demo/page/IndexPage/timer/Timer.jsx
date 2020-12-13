@@ -23,7 +23,7 @@ const Timer = () => {
       setSeconds(numPad(timer.getSeconds()));
       setMinutes(numPad(timer.getMinutes()));
       setHours(numPad(timer.getHours()));
-    }, 1);
+    }, 100);
 
     return () => {
       clearInterval(intervalId);
