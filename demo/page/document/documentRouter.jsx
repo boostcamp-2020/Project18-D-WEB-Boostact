@@ -16,16 +16,16 @@ import useCallback from "./index/useCallback";
 const DocumentRouter = () => {
   return (
     <div>
-      <Route.Route exact path="/docs" component={HelloWorld}></Route.Route>
-      <Route.Route path="/docs/hello_world" component={HelloWorld}></Route.Route>
-      <Route.Route path="/docs/virtual_dom" component={virtualDom}></Route.Route>
-      <Route.Route path="/docs/hooks_state" component={hooksState}></Route.Route>
-      <Route.Route path="/docs/useState" component={useState}></Route.Route>
-      <Route.Route path="/docs/useEffect" component={useEffect}></Route.Route>
-      <Route.Route path="/docs/useContext" component={useContext}></Route.Route>
-      <Route.Route path="/docs/useReducer" component={useReducer}></Route.Route>
-      <Route.Route path="/docs/useMemo" component={useMemo}></Route.Route>
-      <Route.Route path="/docs/useCallback" component={useCallback}></Route.Route>
+      <Route.Route exact path="/docs" component={HelloWorld} isContained></Route.Route>
+      <Route.Route path="/docs/hello_world" component={HelloWorld} isContained></Route.Route>
+      <Route.Route path="/docs/virtual_dom" component={virtualDom} isContained></Route.Route>
+      <Route.Route path="/docs/hooks_state" component={hooksState} isContained></Route.Route>
+      <Route.Route path="/docs/useState" component={useState} isContained></Route.Route>
+      <Route.Route path="/docs/useEffect" component={useEffect} isContained></Route.Route>
+      <Route.Route path="/docs/useContext" component={useContext} isContained></Route.Route>
+      <Route.Route path="/docs/useReducer" component={useReducer} isContained></Route.Route>
+      <Route.Route path="/docs/useMemo" component={useMemo} isContained></Route.Route>
+      <Route.Route path="/docs/useCallback" component={useCallback} isContained></Route.Route>
     </div>
   );
 };
