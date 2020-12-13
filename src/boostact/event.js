@@ -1,6 +1,6 @@
 class EventModule {
     constructor(){
-        this.eventNode = new Array();
+        this.eventNode = [];
     }
     add(vNode){
         if(!vNode.dom) return;
@@ -11,10 +11,18 @@ class EventModule {
         this.eventNode.length = 0;
     }
     eventCall(event){
-        const targetNode = this.eventNode.find((node) => node.dom.isEqualNode(event.target));
+        const handlers = [];
+        event.path.forEach((element,index) => {
+            if(index > event.path.length - 2) return;
+            const targetNode = this.eventNode.find((node) => node.dom.isEqualNode(element));
+            const eventType = `on${this.capitalize(event.type)}` 
         const eventType = `on${this.capitalize(event.type)}` 
-        const handler = targetNode && targetNode.props && targetNode.props[eventType];
-        if(typeof handler === "function") handler(event);
+            const eventType = `on${this.capitalize(event.type)}` 
+            const handler = targetNode && targetNode.props && targetNode.props[eventType];
+            if(typeof handler === "function")
+            handlers.push(handler);
+        })
+        handlers.forEach((handler) => handler(event));
     }
     capitalize(str){
         return str.charAt(0).toUpperCase() + str.slice(1);
