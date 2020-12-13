@@ -447,18 +447,13 @@ const useMemo = (func, arr) => {
     return HOOKS[CURRENT_HOOK_ID].value;
   }
 
-  const result = HOOKS[CURRENT_HOOK_ID].beforeArr.some((el, i) => {
+  HOOKS[CURRENT_HOOK_ID].beforeArr.some((el, i) => {
     if (el !== arr[i]) {
       HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
       return true;
     }
   });
-
-  if (!result) {
-    return HOOKS[CURRENT_HOOK_ID].value;
-  } else {
-    return func();
-  }
+  return HOOKS[CURRENT_HOOK_ID].value;
 };
 
 const useCallback = (func, arr) => {
