@@ -1,8 +1,5 @@
 import Boostact from "./src/boostact/Boostact.js";
+import Route from "./src/boostact/Route.js";
 /** @jsx Boostact.createElement */
 
-console.log("@@@@@@@@@@@@@@@@@");
-console.log("boostact working.");
-console.log(Boostact);
-console.log("@@@@@@@@@@@@@@@@@");
-export default Boostact;
+export { Boostact, Route };

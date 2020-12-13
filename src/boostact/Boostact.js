@@ -1,24 +1,36 @@
+// aws key
 /* eslint-disable no-restricted-syntax */
+import eventModule from './event';
 
 let vRoot = null;
 let currentRoot = null;
 let nextVNode = null;
 let element;
-let component, container;
+let component;
+let container;
+const defaultContext = [];
+let currentContext;
 
 const deletionQueue = [];
 const FIRST_CHILD = 0;
 const INIT_VALUE = 0;
 
-let HOOKS = [];
+const HOOKS = [];
 let HOOK_ID = 0;
+const CONTEXTS = [];
+let CONTEXT_ID = 0;
 
-let ELEMENT_ID = 0;
+const eventType = ['click','input','change','insert']
 
 const initHook = () => {
-  const temp = HOOKS;
-  HOOKS = [];
-  return temp;
+  HOOKS.forEach((hook, index) => {
+    if (index >= HOOK_ID && hook && hook.cleanUp) {
+      hook.cleanUp();
+    }
+  });
+  HOOKS.length = HOOK_ID;
+  currentContext = defaultContext;
+  return HOOKS;
 };
 
 const createTextElement = (text) => {
@@ -43,11 +55,6 @@ const createElement = (type, props, ...children) => {
 
 const workLoop = (deadline) => {
   let isIdle = false;
-  if (nextVNode === vRoot) {
-    component = typeof element.type === "function" ? element.type(element.props) : element;
-    nextVNode = makeVRoot();
-  }
-
   while (nextVNode && !isIdle) {
     nextVNode = makeVNode(nextVNode);
     isIdle = deadline.timeRemaining() < 1;
@@ -56,8 +63,8 @@ const workLoop = (deadline) => {
     reflectDOM(vRoot);
     currentRoot = vRoot;
     vRoot = undefined;
+    container.appendChild(currentRoot.parent.dom)
     HOOK_ID = INIT_VALUE;
-    ELEMENT_ID = INIT_VALUE;
   }
   requestIdleCallback(workLoop);
 };
@@ -74,7 +81,11 @@ const appendVNode = (vNode, children) => {
     let vChild = null;
     if (children && children[index] !== undefined) {
       vChild = { ...children[index] };
-
+      if (children[index].context) {
+        currentContext = children[index].context;
+      } else {
+        currentContext = vNode.context;
+      }
       if (typeof vChild.type === "function") {
         vChild = vChild.type(vChild.props);
 
@@ -84,6 +95,7 @@ const appendVNode = (vNode, children) => {
           continue;
         }
       }
+      vChild.context = currentContext;
     }
 
     if (vChild) {
@@ -108,6 +120,10 @@ const appendVNode = (vNode, children) => {
 };
 
 const makeVNode = (vNode) => {
+  if (typeof vNode.type === "function") {
+    vNode = vNode.type(vNode.props);
+  }
+
   appendVNode(vNode, vNode.props && vNode.props.children);
 
   if (vNode.child) {
@@ -122,19 +138,14 @@ const makeVNode = (vNode) => {
   return vNode.parent && vNode.parent.sibling;
 };
 
-const isRootStartedFunction = () => {
-  if (typeof component?.type === "function") {
-    const temp = component;
-    component = component.type(component.props.value);
-    Object.keys(temp.props).forEach((prop) => {
-      component.props[prop] = temp.props[prop];
-    });
-    vRoot = component;
-  }
-};
-
 const makeVRoot = () => {
-  isRootStartedFunction();
+  if (typeof element.type === "function") {
+    component = element.type(element.props);
+  }
+
+  while (typeof component.type === "function") {
+    component = component.type(component.props);
+  }
 
   const temp = {
     type: component.type,
@@ -144,12 +155,13 @@ const makeVRoot = () => {
       ...component.props,
     },
     parent: {
-      dom: container,
+      dom: document.createDocumentFragment(),
     },
-    effectTag: currentRoot ? "UPDATE" : "PLACEMENT",
-    ELEMENT_ID: ELEMENT_ID,
+    child: currentRoot && currentRoot.child,
+    effectTag: currentRoot && currentRoot.type === component.type ? (isUnchanged(currentRoot, component) ? "NONE" : "UPDATE") : "PLACEMENT",
+    context: [...defaultContext],
   };
-  vRoot = temp;
+
   return temp;
 };
 
@@ -161,9 +173,10 @@ const shallowEqual = (object1, object2) => {
     return false;
   }
 
-  for (let key of keys1) {
+  for (const key of keys1) {
+    if(typeof object1[key] === "function") continue;
     if (object1[key] && key === "style") {
-      if (!shallowEqual(object1[key], object2[key])) {
+      if (!object2[key] || !shallowEqual(object1[key], object2[key])) {
         return false;
       }
     } else if (object1[key] !== object2[key]) {
@@ -182,7 +195,6 @@ const isUnchanged = (curChild, vChild) => {
 
 const determineState = (curChild, vChild) => {
   const sameType = curChild && vChild && curChild.type === vChild.type;
-
   if (vChild && vChild.parent.effectTag === "PLACEMENT") {
     vChild.alternate = curChild;
     vChild.dom = null;
@@ -204,12 +216,38 @@ const determineState = (curChild, vChild) => {
     vChild.dom = null;
     vChild.effectTag = "PLACEMENT";
   }
+
+  if (vChild && curChild && curChild.props.dangerouslySetInnerHTML) {
+    vChild.alternate = curChild;
+    vChild.dom = null;
+    vChild.effectTag = "PLACEMENT";
+  }
 };
 
 const render = (el, root) => {
   element = el;
   container = root;
+  vRoot = makeVRoot();
+  nextVNode = vRoot;
+  eventType.forEach((type) => {
+    document.addEventListener(type, (event) => {
+      eventModule.eventCall(event)
+    })
+  })
 };
+
+const reRender = () => {
+  if (!nextVNode) {
+    HOOK_ID = 0;
+    vRoot = makeVRoot();
+    if (nextVNode) {
+      vRoot = nextVNode;
+    }
+    nextVNode = vRoot;
+    eventModule.clear();
+  }
+};
+
 requestIdleCallback(workLoop);
 
 const VNodeToRNode = (vNode) => {
@@ -218,13 +256,12 @@ const VNodeToRNode = (vNode) => {
   Object.keys(vNode.props)
     .filter((prop) => prop !== "children")
     .forEach((attribute) => {
-      if (attribute.startsWith("on")) {
-        const eventType = attribute.toLowerCase().substring(2);
-        newNode.addEventListener(eventType, vNode.props[attribute]);
-      } else if (attribute === "style") {
+      if (attribute === "style") {
         Object.keys(vNode.props.style).forEach((prop) => {
-          newNode["style"][prop] = vNode.props[attribute][prop];
+          newNode.style[prop] = vNode.props[attribute][prop];
         });
+      } else if (attribute === "dangerouslySetInnerHTML") {
+        newNode.innerHTML = vNode.props[attribute];
       } else {
         newNode[attribute] = vNode.props[attribute];
       }
@@ -250,11 +287,12 @@ const updateNode = (currentNode) => {
 
   for (const name in oldProps) {
     if (name !== "children") {
-      if (name.startsWith("on") && typeof newProps[name] === "function") {
-        const eventType = name.toLowerCase().substring(2);
-        dom.removeEventListener(eventType, oldProps[name]);
-      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+       if (!name.startsWith("on") && typeof newProps[name] !== "function") {
         if (currentNode.type === "TEXT_NODE") continue;
+        if (name === "className") {
+          dom.removeAttribute("class");
+          continue;
+        }
         dom.removeAttribute(name);
       }
     }
@@ -262,16 +300,15 @@ const updateNode = (currentNode) => {
 
   for (const name in newProps) {
     if (name !== "children") {
-      if (name.startsWith("on") && typeof newProps[name] === "function") {
-        const eventType = name.toLowerCase().substring(2);
-        dom.addEventListener(eventType, newProps[name]);
-      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
-        dom[name] = newProps[name];
-
+        if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+          dom[name] = newProps[name];
         if (name === "style") {
           Object.keys(newProps[name]).forEach((prop) => {
             dom[name][prop] = newProps[name][prop];
           });
+        }
+        if (name === "dangerouslySetInnerHTML") {
+          dom.innerHTML = newProps[name];
         }
       }
     }
@@ -298,6 +335,9 @@ const reflectDOM = (node) => {
       default:
         throw new Error("reflectDOM : currentNode.effectTag is undefined.");
     }
+    if(Object.keys(currentNode.props).some((prop) => prop.startsWith("on"))){
+      eventModule.add(currentNode);
+    }
 
     if (currentNode.child) {
       currentNode = currentNode.child;
@@ -321,13 +361,8 @@ const useState = (initValue) => {
   const CURRENT_HOOK_ID = HOOK_ID++;
 
   const setState = (nextValue) => {
-    if (typeof nextValue === "function") {
-      HOOKS[CURRENT_HOOK_ID] = nextValue(HOOKS[CURRENT_HOOK_ID]);
-      nextVNode = vRoot;
-      return;
-    }
-    HOOKS[CURRENT_HOOK_ID] = nextValue;
-    nextVNode = vRoot;
+    typeof nextValue === "function" ? (HOOKS[CURRENT_HOOK_ID] = nextValue(HOOKS[CURRENT_HOOK_ID])) : (HOOKS[CURRENT_HOOK_ID] = nextValue);
+    reRender();
   };
   return [HOOKS[CURRENT_HOOK_ID], setState];
 };
@@ -338,16 +373,27 @@ const useReducer = (reducer, initialState) => {
   const currentValue = HOOKS[CURRENT_HOOK_ID];
   const dispatch = (action) => {
     HOOKS[CURRENT_HOOK_ID] = reducer(HOOKS[CURRENT_HOOK_ID], action);
-    if (currentValue !== HOOKS[CURRENT_HOOK_ID]) nextVNode = vRoot;
+    if (currentValue !== HOOKS[CURRENT_HOOK_ID]) {
+      reRender();
+    }
   };
 
   return [HOOKS[CURRENT_HOOK_ID], dispatch];
 };
 
 const useEffect = (fn, arr) => {
+  if (!fn) {
+    throw new Error("Note : did you forget parameters?");
+  }
+
+  if (!arr) {
+    throw new Error("If you don't want to observe any variable, you have to put an empty array.");
+  }
+
   const CURRENT_HOOK_ID = HOOK_ID++;
   const useEffectHook = {
     cleanUp: null,
+    work: null,
     beforeArr: [],
   };
 
@@ -356,39 +402,99 @@ const useEffect = (fn, arr) => {
     beforeArr.some((el, i) => {
       if (el !== arr[i]) {
         HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
-        HOOKS[CURRENT_HOOK_ID].cleanUp();
-        HOOKS[CURRENT_HOOK_ID].cleanUp = fn;
+        if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
+          HOOKS[CURRENT_HOOK_ID].cleanUp();
+        }
+
+        HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
+        if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
+          throw new Error("useEffect must be return function.");
+        }
         return true;
       }
     });
   } else if (!HOOKS[CURRENT_HOOK_ID]) {
     HOOKS[CURRENT_HOOK_ID] = useEffectHook;
-    HOOKS[CURRENT_HOOK_ID].cleanUp = fn;
+    HOOKS[CURRENT_HOOK_ID].work = fn;
     if (arr.length) {
       HOOKS[CURRENT_HOOK_ID].beforeArr = arr;
     }
+    HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
+    if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
+      throw new Error("useEffect must be return function.");
+    }
   } else if (!HOOKS[CURRENT_HOOK_ID].beforeArr.length) {
-    HOOKS[CURRENT_HOOK_ID].cleanUp();
-    HOOKS[CURRENT_HOOK_ID].cleanUp = () => {};
+    if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
+      HOOKS[CURRENT_HOOK_ID].cleanUp();
+    }
+    HOOKS[CURRENT_HOOK_ID].work = fn;
+    HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
+    if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
+      throw new Error("useEffect must be return function");
+    }
   }
 };
 
+const useMemo = (func, arr) => {
+  if (!arr || !func) {
+    throw new Error("useMemo Hook must have two parameter... (example. useMemo(func, array)");
+  }
+
+  const CURRENT_HOOK_ID = HOOK_ID++;
+  if (!HOOKS[CURRENT_HOOK_ID]) {
+    HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
+    return HOOKS[CURRENT_HOOK_ID].value;
+  }
+
+  if (HOOKS[CURRENT_HOOK_ID].beforeArr.length !== arr.length) {
+    HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
+    return HOOKS[CURRENT_HOOK_ID].value;
+  }
+
+  HOOKS[CURRENT_HOOK_ID].beforeArr.some((el, i) => {
+    if (el !== arr[i]) {
+      HOOKS[CURRENT_HOOK_ID] = { value: func(), beforeArr: arr };
+      return true;
+    }
+  });
+  return HOOKS[CURRENT_HOOK_ID].value;
+};
+
+const useCallback = (func, arr) => {
+  if (!arr || !func) {
+    throw new Error("useCallback Hook must have two parameter... (example. useCallback(func, array)");
+  }
+  return useMemo(() => func, arr);
+};
+
 const useContext = (context) => {
-  return context.value[context.value.length - 1];
+  if (!context) {
+    throw new Error("Parameter is nothing. (ex. useContext(context))");
+  }
+  if (context.id === null || context.id === undefined) {
+    throw new Error("Maybe it's not context... Because it doesn't have context.\"id\"");
+  }
+  return currentContext[context.id];
 };
 
 const createContext = (defaultValue) => {
-  const CURRENT_HOOK_ID = HOOK_ID++;
+  const CURRENT_CONTEXT_ID = CONTEXT_ID++;
+  defaultContext[CURRENT_CONTEXT_ID] = defaultValue;
+  currentContext = defaultContext;
   const useContextHook = {
-    value: [defaultValue],
+    id: CURRENT_CONTEXT_ID,
     Provider: (props) => {
-      HOOKS[CURRENT_HOOK_ID].value.push(props.value);
-      return { type: "CONTEXT", props: { children: props.children }, hook: HOOKS[CURRENT_HOOK_ID] };
+      const newContext = [...currentContext];
+      newContext[CURRENT_CONTEXT_ID] = props.value;
+      props.children.forEach((child) => {
+        child.context = newContext;
+      });
+      return { type: "CONTEXT", props: { children: props.children } };
     },
   };
 
-  HOOKS[CURRENT_HOOK_ID] = HOOKS[CURRENT_HOOK_ID] || useContextHook;
-  return HOOKS[CURRENT_HOOK_ID];
+  CONTEXTS[CURRENT_CONTEXT_ID] = CONTEXTS[CURRENT_CONTEXT_ID] || useContextHook;
+  return CONTEXTS[CURRENT_CONTEXT_ID];
 };
 
-export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook };
+export default { render, createElement, useState, useEffect, createContext, useContext, useReducer, initHook, reRender, useMemo, useCallback };
