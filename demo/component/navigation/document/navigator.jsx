@@ -1,5 +1,4 @@
 import Boostact from "../../../../src/boostact/Boostact";
-import Route from "../../../../src/boostact/Route";
 import NavContainer from "../container/container";
 import { InstallList, ConceptList, HooksList } from "./contents";
 import classes from "./style";
