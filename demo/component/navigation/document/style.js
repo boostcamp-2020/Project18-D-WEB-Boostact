@@ -5,8 +5,9 @@ jss.setup(preset());
 
 const style = {
   navContainer: {
-    width: "30%",
-    backgroundColor: "#dddddd",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#f7f7f7",
   },
 };
 

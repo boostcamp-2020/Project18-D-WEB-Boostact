@@ -1,5 +1,5 @@
 import Boostact from "../../../src/boostact/Boostact";
-import Button from "../../component/common/button/button.jsx";
+import Button from "../../component/common/header/button/button.jsx";
 import classes from "./style";
 
 /** @jsx Boostact.createElement */
@@ -11,7 +11,7 @@ const Banner = () => {
       <p className={classes.description}>사용자 인터페이스를 만들기 위한 JavaScript 라이브러리</p>
       <div className={classes.startButton}>
         <div className={classes.leftButton}>
-          <Button href="./document" name="시작하기"></Button>
+          <Button href="./docs" name="시작하기"></Button>
         </div>
         <Button href="./bugReport" name="버전관리"></Button>
       </div>
