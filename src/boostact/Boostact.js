@@ -125,9 +125,6 @@ const makeVNode = (vNode) => {
   }
 
   appendVNode(vNode, vNode.props && vNode.props.children);
-  if(Object.keys(vNode.props).some((prop) => prop.startsWith("on"))){
-    eventModule.add(vNode);
-  }
 
   if (vNode.child) {
     return vNode.child;
@@ -337,6 +334,9 @@ const reflectDOM = (node) => {
         break;
       default:
         throw new Error("reflectDOM : currentNode.effectTag is undefined.");
+    }
+    if(Object.keys(currentNode.props).some((prop) => prop.startsWith("on"))){
+      eventModule.add(currentNode);
     }
 
     if (currentNode.child) {
