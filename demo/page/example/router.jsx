@@ -13,7 +13,7 @@ const Router = () => {
     .fill(0)
     .map((val, index) => {
       const path = "/examples/page_" + (index + 1);
-      return <Route.Route path={path} component={pageList[index]}></Route.Route>;
+      return <Route.Route path={path} component={pageList[index]} isContained></Route.Route>;
     });
 
   return (
