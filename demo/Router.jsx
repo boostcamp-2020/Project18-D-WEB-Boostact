@@ -11,7 +11,7 @@ import HelloWorld from "./page/document/index/helloWorld";
 const MainRouter = () => {
   return (
     <div id="ROUTING">
-      <Route.Route path="/" component={IndexPage}></Route.Route>
+      <Route.Route exact path="/" component={IndexPage}></Route.Route>
       <Route.Route path="/docs" component={Document}></Route.Route>
       <Route.Route path="/examples" component={Example}></Route.Route>
       <Route.Route path="/bugReport" component={BugReport}></Route.Route>

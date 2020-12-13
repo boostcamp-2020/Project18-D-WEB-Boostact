@@ -39,7 +39,7 @@ npm install html-webpack-plugin mini-css-extract-plugin --save-dev
 ```
 
 Now you can create a webpack run command in package.json!
-Below are .babelrc files and webpack.config.js files. You can modify it according to what you want.
+Below are .babelrc files and webpack.config.js files. You can modify it according to what you want.  
 **.babelrc**
 
 ```
@@ -137,7 +137,8 @@ export default App;
 ```
 
 If you followed up to here, you can use Boostact. Note that jsDoc should be added so that the babel can parse jsx as Boostact.createElement instead of React.createElement.
-**jsdoc (essential)**
+  
+  **jsdoc (essential)**
 
 ```
 /** @jsx Boostact.createElement/

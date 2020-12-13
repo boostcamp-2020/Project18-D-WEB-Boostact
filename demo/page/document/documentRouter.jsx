@@ -17,7 +17,6 @@ const DocumentRouter = () => {
   return (
     <div>
       <Route.Route exact path="/docs" component={HelloWorld} isContained></Route.Route>
-      <Route.Route path="/docs/hello_world" component={HelloWorld} isContained></Route.Route>
       <Route.Route path="/docs/virtual_dom" component={virtualDom} isContained></Route.Route>
       <Route.Route path="/docs/hooks_state" component={hooksState} isContained></Route.Route>
       <Route.Route path="/docs/useState" component={useState} isContained></Route.Route>
