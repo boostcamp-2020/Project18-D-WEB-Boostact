@@ -120,7 +120,7 @@ const string5 = marked(`### index.js`);
 const highlight5 = hljs.highlight(
   "javascript",
   `
-import Boostact from "boostact";
+import { Boostact } from "boostact";
 import App from "./App";
 /** @jsx Boostact.createElement */
 const root = document.getElementById("root");
@@ -133,7 +133,7 @@ const string6 = marked(`### App.js`);
 const highlight6 = hljs.highlight(
   "javascript",
   `
-import Boostact from "boostact";
+import { Boostact } from "boostact";
 /** @jsx Boostact.createElement */
 const App = () => {
     return (
