@@ -35,16 +35,12 @@ const ControllButton = () => {
     <div>
       <div>
         <Route.Link to={prevLink}>
-          <div>
-            <button onClick={up}>◄</button>
-          </div>
+          <button onClick={up}>◄</button>
         </Route.Link>
       </div>
       <div>
         <Route.Link to={frontLink}>
-          <div>
-            <button onClick={down}>►</button>
-          </div>
+          <button onClick={down}>►</button>
         </Route.Link>
       </div>
     </div>
