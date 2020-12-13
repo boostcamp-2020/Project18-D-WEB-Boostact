@@ -20,6 +20,7 @@ const Example = () => {
       <Context.Provider value={value}>
         <div className={classes.DocumentPage}>
           <Router />
+          <ControllButton />
         </div>
         <div className={classes.ASide}>
           <Navigator />
