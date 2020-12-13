@@ -16,8 +16,6 @@ class EventModule {
             if(index > event.path.length - 2) return;
             const targetNode = this.eventNode.find((node) => node.dom.isEqualNode(element));
             const eventType = `on${this.capitalize(event.type)}` 
-        const eventType = `on${this.capitalize(event.type)}` 
-            const eventType = `on${this.capitalize(event.type)}` 
             const handler = targetNode && targetNode.props && targetNode.props[eventType];
             if(typeof handler === "function")
             handlers.push(handler);
