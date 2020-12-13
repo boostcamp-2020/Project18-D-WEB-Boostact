@@ -111,7 +111,7 @@ module.exports = {
 ### index.js
 
 ```
-import Boostact from "boostact";
+import { Boostact } from "boostact";
 import App from "./App";
 /** @jsx Boostact.createElement */
 const root = document.getElementById("root");
@@ -122,7 +122,7 @@ Boostact.render(<App />, root);
 ### App.js
 
 ```
-import Boostact from "boostact";
+import { Boostact } from "boostact";
 /** @jsx Boostact.createElement */
 const App = () => {
     return (
@@ -137,8 +137,8 @@ export default App;
 ```
 
 If you followed up to here, you can use Boostact. Note that jsDoc should be added so that the babel can parse jsx as Boostact.createElement instead of React.createElement.
-  
-  **jsdoc (essential)**
+
+**jsdoc (essential)**
 
 ```
 /** @jsx Boostact.createElement/
