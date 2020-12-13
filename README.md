@@ -57,7 +57,7 @@ npm install html-webpack-plugin mini-css-extract-plugin --save-dev
 
 **webpack.config.js**
 
-```
+```jsx
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
@@ -105,7 +105,7 @@ module.exports = {
 
 ### index.html
 
-```
+```html
 <!DOCTYPE html>
 <body>
   <div id="root"></div>
@@ -115,7 +115,7 @@ module.exports = {
 
 ### index.js
 
-```
+```jsx
 import { Boostact } from "boostact";
 import App from "./App";
 /** @jsx Boostact.createElement */
@@ -126,7 +126,7 @@ Boostact.render(<App />, root);
 
 ### App.js
 
-```
+```jsx
 import { Boostact } from "boostact";
 /** @jsx Boostact.createElement */
 
@@ -146,7 +146,7 @@ export default App;
 
 ### jsdoc (essential)
 
-```
+```jsx
 /** @jsx Boostact.createElement/
 ```
 
