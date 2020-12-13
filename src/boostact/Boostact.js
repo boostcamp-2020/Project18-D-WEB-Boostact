@@ -1,5 +1,6 @@
 // aws key
 /* eslint-disable no-restricted-syntax */
+import eventModule from './event';
 
 let vRoot = null;
 let currentRoot = null;
@@ -18,6 +19,8 @@ const HOOKS = [];
 let HOOK_ID = 0;
 const CONTEXTS = [];
 let CONTEXT_ID = 0;
+
+const eventType = ['click','input','change','insert']
 
 const initHook = () => {
   HOOKS.forEach((hook, index) => {
@@ -60,6 +63,7 @@ const workLoop = (deadline) => {
     reflectDOM(vRoot);
     currentRoot = vRoot;
     vRoot = undefined;
+    container.appendChild(currentRoot.parent.dom)
     HOOK_ID = INIT_VALUE;
   }
   requestIdleCallback(workLoop);
@@ -121,6 +125,10 @@ const makeVNode = (vNode) => {
   }
 
   appendVNode(vNode, vNode.props && vNode.props.children);
+  if(Object.keys(vNode.props).some((prop) => prop.startsWith("on"))){
+    eventModule.add(vNode);
+  }
+
   if (vNode.child) {
     return vNode.child;
   }
@@ -150,7 +158,7 @@ const makeVRoot = () => {
       ...component.props,
     },
     parent: {
-      dom: container,
+      dom: document.createDocumentFragment(),
     },
     child: currentRoot && currentRoot.child,
     effectTag: currentRoot && currentRoot.type === component.type ? (isUnchanged(currentRoot, component) ? "NONE" : "UPDATE") : "PLACEMENT",
@@ -169,7 +177,7 @@ const shallowEqual = (object1, object2) => {
   }
 
   for (const key of keys1) {
-    // if(typeof object1[key] === "function") continue;
+    if(typeof object1[key] === "function") continue;
     if (object1[key] && key === "style") {
       if (!object2[key] || !shallowEqual(object1[key], object2[key])) {
         return false;
@@ -224,6 +232,11 @@ const render = (el, root) => {
   container = root;
   vRoot = makeVRoot();
   nextVNode = vRoot;
+  eventType.forEach((type) => {
+    document.addEventListener(type, (event) => {
+      eventModule.eventCall(event)
+    })
+  })
 };
 
 const reRender = () => {
@@ -234,6 +247,7 @@ const reRender = () => {
       vRoot = nextVNode;
     }
     nextVNode = vRoot;
+    eventModule.clear();
   }
 };
 
@@ -245,10 +259,7 @@ const VNodeToRNode = (vNode) => {
   Object.keys(vNode.props)
     .filter((prop) => prop !== "children")
     .forEach((attribute) => {
-      if (attribute.startsWith("on")) {
-        const eventType = attribute.toLowerCase().substring(2);
-        newNode.addEventListener(eventType, vNode.props[attribute]);
-      } else if (attribute === "style") {
+      if (attribute === "style") {
         Object.keys(vNode.props.style).forEach((prop) => {
           newNode.style[prop] = vNode.props[attribute][prop];
         });
@@ -279,10 +290,7 @@ const updateNode = (currentNode) => {
 
   for (const name in oldProps) {
     if (name !== "children") {
-      if (name.startsWith("on") && typeof newProps[name] === "function") {
-        const eventType = name.toLowerCase().substring(2);
-        dom.removeEventListener(eventType, oldProps[name]);
-      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+       if (!name.startsWith("on") && typeof newProps[name] !== "function") {
         if (currentNode.type === "TEXT_NODE") continue;
         if (name === "className") {
           dom.removeAttribute("class");
@@ -295,12 +303,8 @@ const updateNode = (currentNode) => {
 
   for (const name in newProps) {
     if (name !== "children") {
-      if (name.startsWith("on") && typeof newProps[name] === "function") {
-        const eventType = name.toLowerCase().substring(2);
-        dom.addEventListener(eventType, newProps[name]);
-      } else if (!name.startsWith("on") && typeof newProps[name] !== "function") {
-        dom[name] = newProps[name];
-
+        if (!name.startsWith("on") && typeof newProps[name] !== "function") {
+          dom[name] = newProps[name];
         if (name === "style") {
           Object.keys(newProps[name]).forEach((prop) => {
             dom[name][prop] = newProps[name][prop];
