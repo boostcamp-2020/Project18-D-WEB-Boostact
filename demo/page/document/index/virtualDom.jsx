@@ -6,18 +6,18 @@ import classes from "../style";
 /** @jsx Boostact.createElement */
 
 const string1 = marked(`
-# 가상 돔
+# 가상 DOM
 
-가상 돔은 Boostact에 있어서 **가장 중요한 부분**입니다. 이 점은, Boostact가 React를 따라 만들었기 때문만은 아닙니다.  
-조금 더 근원적인 이유로써, Boostact가 웹 프레임워크로 동작하는 데에 가상 돔은 **필수적인 요소**입니다. 가상 돔이 없다면 Boostact는 현재 렌더링된 페이지와 다음 번 렌더링될 페이지의 차이점을 파악하지 못할 것이고, 이는 큰 성능 저하로 이어질 것입니다.  
+가상 DOM은 Boostact에 있어서 **가장 중요한 부분**입니다. 이 점은, Boostact가 React를 따라 만들었기 때문만은 아닙니다.  
+조금 더 근원적인 이유로써, Boostact가 웹 프레임워크로 동작하는 데에 가상 DOM은 **필수적인 요소**입니다. 가상 DOM이 없다면 Boostact는 현재 렌더링된 페이지와 다음 번 렌더링될 페이지의 차이점을 파악하지 못할 것이고, 이는 큰 성능 저하로 이어질 것입니다.  
 Boostact에서 DOM은 총 3개로, 편의 상 **CurrentDOM과 wipDOM, realDOM**이라고 나누겠습니다.     
   
-**realDOM**은 실제로 Rendering 되어 있는 돔을 말합니다.  
-**currentDOM**은 realDOM과 동일한 형태의 JS 객체, 가상돔을 의미합니다.   
-**wipDOM** 역시 currentDOM과 마찬가지로 가상 돔입니다. 상세한 내용은 곧 바로 설명드리겠습니다.
-이 장에서는 각각의 돔들이 어떤 역할을 하며, 어떤 상호작용을 주고 받는지에 대해 이야기하겠습니다.  
+**realDOM**은 실제로 Rendering 되어 있는 DOM을 말합니다.  
+**currentDOM**은 realDOM과 동일한 형태의 JS 객체, 가상DOM을 의미합니다.   
+**wipDOM** 역시 currentDOM과 마찬가지로 가상 DOM입니다. 상세한 내용은 곧 바로 설명드리겠습니다.
+이 장에서는 각각의 DOM들이 어떤 역할을 하며, 어떤 상호작용을 주고 받는지에 대해 이야기하겠습니다.  
   
-# 돔의 비교
+# DOM의 비교
 
 `);
 
@@ -148,11 +148,11 @@ const highlight3 = hljs.highlight(
 ).value;
 
 const string5 = marked(`
-여기까지 오셨다면 가상돔에 상당한 부하가 걸리지 않는지 걱정이 될 수 있습니다. 하지만 Boostact에서는 다음과 같은 방법들로 부하를 줄이기 위해 노력하고 있습니다.   
+여기까지 오셨다면 가상DOM에 상당한 부하가 걸리지 않는지 걱정이 될 수 있습니다. 하지만 Boostact에서는 다음과 같은 방법들로 부하를 줄이기 위해 노력하고 있습니다.   
     
 첫째, requestIdleCallback을 사용하여 브라우저가 실행중인 로직이 없는 경우에만 렌더링한다.    
 둘째, NONE 태그를 사용하여 변화가 없는 DOM에는 렌더링을 하지 않는다.    
-셋째, 가상돔이 실제 DOM 형태로 렌더링이 되면, 그 상단의 root만을 div#root에 붙임으로써 렌더링을 최소화한다.    
+셋째, 가상DOM이 실제 DOM 형태로 렌더링이 되면, 그 상단의 root만을 div#root에 붙임으로써 렌더링을 최소화한다.    
     
 `);
 
