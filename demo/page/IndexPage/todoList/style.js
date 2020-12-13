@@ -4,7 +4,7 @@ import preset from "jss-preset-default";
 jss.setup(preset());
 
 const style = {
-  todoPanel: { width: "90%", marginLeft: "auto", marginTop: "5rem", marginRight: "auto", border: "1px solid #F2F2F2", borderRadius: "10px" },
+  todoPanel: { width: "90%", margin: "auto", marginTop: "5rem", border: "1px solid #F2F2F2", borderRadius: "10px" },
   todoHeader: {
     backgroundColor: "#424857",
     margin: "0px",
