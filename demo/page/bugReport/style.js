@@ -22,6 +22,9 @@ const styleSheet = {
   report: {
     fontSize: "14px",
   },
+  aTag: {
+    color: "black",
+  },
 };
 
 const { classes } = jss.createStyleSheet(styleSheet).attach();
