@@ -25,7 +25,7 @@ const style = {
     fontWeight: "bold",
   },
   li: { cursor: "pointer", fontWeight: "normal", "&:hover": { color: "#6d6d6d" } },
-  liClicked: { fontWeight: "bold" },
+  liClicked: { cursor: "pointer", fontWeight: "bold" },
 };
 
 const { classes } = jss.createStyleSheet(style).attach();
