@@ -1,5 +1,5 @@
 import Boostact from "./src/boostact/Boostact.js";
-import Route from "./src/boostact/Route.js";
+import {Route,Link} from "./src/boostact/Route.js";
 /** @jsx Boostact.createElement */
 
-export { Boostact, Route };
+export { Boostact, Route, Link };
