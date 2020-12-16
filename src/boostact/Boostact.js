@@ -405,7 +405,7 @@ const useEffect = (fn, arr) => {
         if (typeof HOOKS[CURRENT_HOOK_ID].cleanUp === "function") {
           HOOKS[CURRENT_HOOK_ID].cleanUp();
         }
-
+        HOOKS[CURRENT_HOOK_ID].work = fn;
         HOOKS[CURRENT_HOOK_ID].cleanUp = HOOKS[CURRENT_HOOK_ID].work();
         if (HOOKS[CURRENT_HOOK_ID].cleanUp && typeof HOOKS[CURRENT_HOOK_ID].cleanUp !== "function") {
           throw new Error("useEffect must be return function.");
