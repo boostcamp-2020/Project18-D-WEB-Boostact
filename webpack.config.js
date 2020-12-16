@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const FaviconWebpackPlugin = require("favicons-webpack-plugin");
 const path = require("path");
 
 module.exports = {
@@ -44,5 +45,6 @@ module.exports = {
       filename: "index.html",
       template: "./demo/html/index.html",
     }),
+    new FaviconWebpackPlugin({ logo: "./favicon/boostact.ico" }),
   ],
 };
