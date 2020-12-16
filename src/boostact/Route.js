@@ -60,4 +60,4 @@ const router = new Router({
 
 window.router = router;
 
-export default { Link, Route };
+export { Link, Route };
