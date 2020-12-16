@@ -1,0 +1,10 @@
+.github
+demo/
+node_modules/
+example/
+index.html
+.prettierrc
+.babelrc
+.gitignore
+webpack.config.js
+test/
