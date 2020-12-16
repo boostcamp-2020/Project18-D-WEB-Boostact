@@ -6,6 +6,7 @@ export const ConceptList = [
 ];
 
 export const HooksList = [
+  { name: "guide", link: "/docs/hooks_guide" },
   { name: "useState", link: "/docs/useState" },
   { name: "useEffect", link: "/docs/useEffect" },
   { name: "useContext", link: "/docs/useContext" },
