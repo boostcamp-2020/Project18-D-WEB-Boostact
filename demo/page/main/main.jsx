@@ -1,5 +1,5 @@
 import Boostact from "../../../src/boostact/Boostact";
-import Route from "../../../src/boostact/Route";
+import {Route, Link} from "../../../src/boostact/Route";
 import Header from "../../component/header/header";
 import Footer from "../../component/common/footer/footer";
 import MainRouter from "../../router";

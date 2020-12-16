@@ -1,5 +1,5 @@
 import Boostact from "../../../../../src/boostact/Boostact";
-import Route from "../../../../../src/boostact/Route";
+import {Link} from "../../../../../src/boostact/Route";
 import { classes, onPage } from "./style";
 
 /** @jsx Boostact.createElement */
@@ -14,12 +14,12 @@ const Button = ({ href, name }) => {
 
   return (
     <div>
-      <Route.Link to={href} className={classes.container}>
+      <Link to={href} className={classes.container}>
         <span className={classes.isHover}>
           {name}
           {clicked ? <span style={onPage(name.length)}></span> : <span />}
         </span>
-      </Route.Link>
+      </Link>
     </div>
   );
 };
