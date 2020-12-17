@@ -2,7 +2,7 @@
 
 # Boostact
 
-- [Boostact를 사용하여 만든 Boostact document (제작 중)](https://boostact.github.io/)
+- [Boostact를 사용하여 만든 Boostact document](https://boostact.github.io/)
 - [Boostact npm adress](https://www.npmjs.com/package/boostact)
 
 # WHAT
