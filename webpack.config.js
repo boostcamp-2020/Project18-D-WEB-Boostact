@@ -45,6 +45,5 @@ module.exports = {
       filename: "index.html",
       template: "./demo/html/index.html",
     }),
-    new FaviconWebpackPlugin({ logo: "./favicon/boostact.ico" }),
   ],
 };
