@@ -13,11 +13,11 @@ const Header = () => {
       </div>
       <div className={classes.commonHeaderDiv + " " + classes.centerHeaderDiv}>
         <Button href="/docs" name="문서" />
-        <Button href="/examples" name="예제" />
         <Button href="/bugReport" name="개발현황" />
+        <a className={classes.buttonStyle} href="https://kakasoo.github.io/" >발표자료</a>
       </div>
       <div className={classes.commonHeaderDiv}>
-        <A link="https://www.npmjs.com/package/boostact" name="v1.1.61" />
+        <A link="https://www.npmjs.com/package/boostact" name="v1.3.6" />
         <A link="https://github.com/boostcamp-2020/Project18-D-WEB-Boostact" name="Github" />
       </div>
     </div>

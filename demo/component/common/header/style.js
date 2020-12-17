@@ -30,6 +30,19 @@ const styles = {
     paddingLeft: "40px",
   },
 
+  buttonStyle: {
+    display: "flex",
+    flexFlow: "column",
+    padding: "10px 20px",
+    color: "white",
+    textDecoration:"none",
+
+    "&:hover": {
+      color: "#61dafb",
+      cursor: "pointer",
+    },
+  },
+
   github: {
     textDecoration: "none",
     margin: "0",
